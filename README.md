@@ -7,6 +7,13 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Desktop and cloud readiness](docs/desktop-readiness.md)
 - [Assessment project plan](docs/project-plan.md)
 - [Configuration inventory](docs/configuration-inventory.md)
+- [Bootstrap log](docs/bootstrap-log.md)
+
+## Repositories
+
+- [Platform](https://github.com/somakalla1-droid/gke-sre-platform)
+- [Request info service](https://github.com/somakalla1-droid/gke-request-info-service)
+- [Response service](https://github.com/somakalla1-droid/gke-response-service)
 
 ## Current phase
 

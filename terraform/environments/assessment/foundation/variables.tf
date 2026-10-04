@@ -1,0 +1,12 @@
+variable "project_id" {
+  type    = string
+  default = "gke-sre-assesment"
+}
+variable "primary_region" {
+  type    = string
+  default = "us-central1"
+}
+variable "secondary_region" {
+  type    = string
+  default = "us-east1"
+}

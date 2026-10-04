@@ -164,6 +164,8 @@ Production deployment approval should be separate from image build/publish permi
 | GKE auth plugin | Installed and available on `PATH` | Verified |
 | GitHub CLI | Installed and authenticated | Verified |
 | Git | Installed | Verified |
+| Go | `1.27.1` | Verified |
+| Helm | `4.3.0` | Verified |
 
 See [Desktop and Google Cloud Readiness](desktop-readiness.md) for versions and completion commands.
 

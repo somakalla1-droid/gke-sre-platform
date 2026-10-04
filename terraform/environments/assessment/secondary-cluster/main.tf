@@ -1,0 +1,14 @@
+variable "project_id" {
+  type    = string
+  default = "gke-sre-assesment"
+}
+module "cluster" {
+  source              = "../../../modules/gke_cluster"
+  project_id          = var.project_id
+  name                = "gke-secondary"
+  location            = "us-east1-b"
+  network             = "gke-assessment-vpc"
+  subnetwork          = "gke-secondary-subnet"
+  pods_range_name     = "secondary-pods"
+  services_range_name = "secondary-services"
+}

@@ -54,6 +54,8 @@ Enabling an API does not by itself create a billable workload. No GKE cluster, n
 | Git | `2.50.1` | Ready |
 | Terraform | `1.16.4` | Ready |
 | GKE auth plugin | Installed; binary reports `v0.1.0-gke.3-75-ge286783f0` | Ready |
+| Go | `1.27.1` | Ready |
+| Helm | `4.3.0` | Ready |
 
 ## Workstation installation record
 
