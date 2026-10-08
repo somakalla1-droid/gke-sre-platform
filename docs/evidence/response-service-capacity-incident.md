@@ -35,4 +35,6 @@ kubectl describe node <node-name>
 kubectl get events -A --sort-by=.lastTimestamp
 ```
 
-After the Terraform capacity change is applied, retry the same Helm release and verify that two response pods are `Running` and `Ready`. This document must be updated with the successful retry evidence.
+The two-node Terraform change was applied and drift-verified. The retry then exposed a second, independent startup control: Kubernetes rejected the distroless image's named `nonroot` user because it could not verify that it was non-root. The response-service Helm chart was corrected to set numeric `runAsUser` and `runAsGroup` values of `65532`, then merged before a final retry.
+
+The final Helm release succeeded. Two response pods were `Running`, `Ready`, and at zero restarts. They were scheduled to the second node, pulled the immutable Artifact Registry image, and used the configured Secret Manager CSI volume. The full evidence is recorded in [response-service-deployment.md](response-service-deployment.md).

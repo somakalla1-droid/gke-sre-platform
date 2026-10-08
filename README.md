@@ -16,6 +16,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Primary cluster readiness](docs/primary-cluster-readiness.md)
 - [Google Secret Manager demo design](docs/secret-manager-demo.md)
 - [Response-service capacity incident](docs/evidence/response-service-capacity-incident.md)
+- [Response-service deployment evidence](docs/evidence/response-service-deployment.md)
 
 ## Repositories
 
@@ -25,4 +26,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, and the response-service container image are complete. The first response-service Helm release exposed a real scheduling-capacity incident: the one-node pool had no schedulable CPU left after GKE system add-ons. The next controlled stage is to review and apply the Terraform change that scales the primary node pool to two nodes, then retry the Helm release.
+Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, and the response-service deployment are complete. The first response-service Helm release exposed a real scheduling-capacity incident; the Terraform-managed two-node correction and a numeric distroless security-context fix were verified by a successful two-pod deployment. The next controlled stage is deploying the request service and establishing the Application A-to-B flow.
