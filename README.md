@@ -8,6 +8,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Assessment project plan](docs/project-plan.md)
 - [Configuration inventory](docs/configuration-inventory.md)
 - [Bootstrap log](docs/bootstrap-log.md)
+- [Terraform state operations](docs/terraform-state.md)
 
 ## Repositories
 

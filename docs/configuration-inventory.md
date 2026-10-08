@@ -58,9 +58,11 @@ gcloud billing projects describe gke-sre-assesment
 | Primary cluster | `gke-primary` | Proposed |
 | Secondary cluster | `gke-secondary` | Proposed |
 | Artifact Registry repository | `gke-apps` | Proposed |
-| Terraform state bucket | Globally unique name derived from project ID | Pending creation |
+| Terraform state bucket | `gke-sre-assesment-tfstate-150538255871` | Verified |
 | BigQuery dataset | `gke_observability` | Proposed |
 | Log sink | `gke-bigquery-sink` | Proposed |
+
+The state bucket uses uniform bucket-level access, enforced public-access prevention, object versioning, and GCP soft-delete protection. Each Terraform root uses a distinct object prefix.
 
 IP ranges, node/compute class, cluster release channel, and exact resource limits will be selected during Terraform design after checking quota and cost implications.
 
