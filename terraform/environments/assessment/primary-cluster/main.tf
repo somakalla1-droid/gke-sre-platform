@@ -15,4 +15,8 @@ module "cluster" {
 
   artifact_registry_location   = "us-central1"
   artifact_registry_repository = "gke-apps"
+
+  # Two nodes are required to leave schedulable capacity for the two-replica
+  # assessment applications after GKE system add-ons are accounted for.
+  node_count = 2
 }
