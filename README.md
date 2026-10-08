@@ -18,6 +18,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Response-service capacity incident](docs/evidence/response-service-capacity-incident.md)
 - [Response-service deployment evidence](docs/evidence/response-service-deployment.md)
 - [Request-service deployment and cross-service flow evidence](docs/evidence/request-service-deployment.md)
+- [External GKE Ingress runbook](docs/runbooks/external-gke-ingress.md)
 
 ## Repositories
 
