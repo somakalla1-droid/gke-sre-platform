@@ -14,6 +14,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Foundation deployment evidence](docs/evidence/foundation-deployment.md)
 - [Primary cluster deployment evidence](docs/evidence/primary-cluster-deployment.md)
 - [Primary cluster readiness](docs/primary-cluster-readiness.md)
+- [Google Secret Manager demo design](docs/secret-manager-demo.md)
 
 ## Repositories
 

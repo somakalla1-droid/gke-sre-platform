@@ -54,6 +54,15 @@ resource "google_container_cluster" "this" {
   release_channel { channel = "REGULAR" }
   logging_service    = "logging.googleapis.com/kubernetes"
   monitoring_service = "monitoring.googleapis.com/kubernetes"
+
+  secret_manager_config {
+    enabled = true
+
+    rotation_config {
+      enabled           = true
+      rotation_interval = "120s"
+    }
+  }
 }
 
 resource "google_container_node_pool" "general_purpose" {

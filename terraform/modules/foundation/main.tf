@@ -4,7 +4,12 @@ locals {
     "compute.googleapis.com", "container.googleapis.com",
     "iam.googleapis.com", "iamcredentials.googleapis.com",
     "logging.googleapis.com", "monitoring.googleapis.com",
+    "secretmanager.googleapis.com",
   ])
+}
+
+data "google_project" "current" {
+  project_id = var.project_id
 }
 
 resource "google_project_service" "required" {
@@ -60,4 +65,27 @@ resource "google_artifact_registry_repository" "apps" {
   repository_id = "gke-apps"
   format        = "DOCKER"
   depends_on    = [google_project_service.required]
+}
+
+resource "google_secret_manager_secret" "response_demo_token" {
+  project   = var.project_id
+  secret_id = var.response_demo_secret_id
+
+  labels = {
+    application = "gke-response-service"
+    purpose     = "assessment-demo"
+  }
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_secret_manager_secret_iam_member" "response_demo_accessor" {
+  project   = var.project_id
+  secret_id = google_secret_manager_secret.response_demo_token.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "principal://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/${var.application_namespace}/sa/${var.response_service_account_name}"
 }
