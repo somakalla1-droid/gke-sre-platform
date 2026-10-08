@@ -27,4 +27,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, and both primary-cluster application deployments are complete. Application A calls Application B through internal Kubernetes DNS, propagates `X-Request-ID`, and emits correlated structured logs. The next controlled stage is application observability evidence and an accessible endpoint, followed by the secondary-cluster phase.
+Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, and both primary-cluster application deployments are complete. Application A calls Application B through internal Kubernetes DNS, propagates `X-Request-ID`, and emits correlated structured logs. An external request-service Ingress is enabled but awaiting the Terraform-managed GKE HTTP load-balancing add-on; the next controlled stage is applying that correction and verifying the public endpoint.
