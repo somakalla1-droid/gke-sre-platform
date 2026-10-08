@@ -55,6 +55,14 @@ resource "google_container_cluster" "this" {
   logging_service    = "logging.googleapis.com/kubernetes"
   monitoring_service = "monitoring.googleapis.com/kubernetes"
 
+  # Required for GKE to reconcile Kubernetes Ingress resources into external
+  # Application Load Balancers. Kept explicit rather than relying on defaults.
+  addons_config {
+    http_load_balancing {
+      disabled = false
+    }
+  }
+
   secret_manager_config {
     enabled = true
 
