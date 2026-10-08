@@ -5,6 +5,8 @@
 **Cloud project:** `gke-sre-assesment`  
 **Primary objective:** Build a reproducible, cost-conscious GCP environment with two GKE clusters, two multi-replica web applications, global traffic design, and end-to-end observability.
 
+The original assessment wording and current implementation coverage are maintained separately in [Assignment Requirements](assignment-requirements.md) and [Requirements Traceability](requirements-traceability.md).
+
 ## 1. Assessment outcomes
 
 The completed assessment must provide:
@@ -202,7 +204,7 @@ Exit criteria:
 
 **Goal:** Deploy both applications with resilient pod configurations.
 
-**Status:** Shared cluster Terraform is formatted and valid. The primary backend is initialized, its saved plan has been reviewed (`5 add, 0 change, 0 destroy`), and no cluster has been applied yet.
+**Status:** The primary cluster is applied, healthy, and verified with no Terraform drift. The secondary cluster remains prepared but unapplied. Application deployment begins after the application observability/configuration corrections are committed.
 
 Tasks:
 
