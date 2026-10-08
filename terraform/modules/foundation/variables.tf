@@ -19,3 +19,20 @@ variable "response_demo_secret_id" {
   type        = string
   default     = "gke-sre-response-demo-token"
 }
+
+variable "application_logs_dataset_id" {
+  description = "BigQuery dataset ID for exported assessment application request logs."
+  type        = string
+  default     = "assessment_app_logs"
+}
+
+variable "application_logs_retention_days" {
+  description = "Default BigQuery table retention period for exported application logs."
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.application_logs_retention_days >= 1 && var.application_logs_retention_days <= 365
+    error_message = "application_logs_retention_days must be between 1 and 365."
+  }
+}

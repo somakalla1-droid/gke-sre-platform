@@ -67,6 +67,45 @@ resource "google_artifact_registry_repository" "apps" {
   depends_on    = [google_project_service.required]
 }
 
+resource "google_bigquery_dataset" "assessment_app_logs" {
+  project                     = var.project_id
+  dataset_id                  = var.application_logs_dataset_id
+  location                    = "US"
+  delete_contents_on_destroy  = false
+  default_table_expiration_ms = var.application_logs_retention_days * 24 * 60 * 60 * 1000
+
+  labels = {
+    purpose     = "assessment-observability"
+    data_source = "cloud-logging"
+  }
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_logging_project_sink" "assessment_app_requests" {
+  project                = var.project_id
+  name                   = "assessment-app-request-logs-to-bigquery"
+  destination            = "bigquery.googleapis.com/projects/${var.project_id}/datasets/${google_bigquery_dataset.assessment_app_logs.dataset_id}"
+  unique_writer_identity = true
+
+  filter = <<-EOT
+    resource.type="k8s_container"
+    resource.labels.cluster_name="gke-primary"
+    resource.labels.namespace_name="${var.application_namespace}"
+    resource.labels.container_name="application"
+    jsonPayload.message="request completed"
+  EOT
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_bigquery_dataset_iam_member" "assessment_app_requests_writer" {
+  project    = var.project_id
+  dataset_id = google_bigquery_dataset.assessment_app_logs.dataset_id
+  role       = "roles/bigquery.dataEditor"
+  member     = google_logging_project_sink.assessment_app_requests.writer_identity
+}
+
 resource "google_secret_manager_secret" "response_demo_token" {
   project   = var.project_id
   secret_id = var.response_demo_secret_id
