@@ -7,8 +7,12 @@ module "cluster" {
   project_id          = var.project_id
   name                = "gke-primary"
   location            = "us-central1-a"
+  region              = "us-central1"
   network             = "gke-assessment-vpc"
   subnetwork          = "gke-primary-subnet"
   pods_range_name     = "primary-pods"
   services_range_name = "primary-services"
+
+  artifact_registry_location   = "us-central1"
+  artifact_registry_repository = "gke-apps"
 }
