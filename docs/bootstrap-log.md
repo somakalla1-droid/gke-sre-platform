@@ -15,3 +15,10 @@
 - Built both application containers locally and validated both Go test suites and Helm charts.
 
 No GKE cluster, VM, load balancer, database, or other billable workload was created during bootstrap.
+
+## October 7, 2026
+
+- Created `gke-sre-assesment-tfstate-150538255871` in `us-central1` for Terraform remote state.
+- Enforced uniform bucket-level access and public-access prevention.
+- Enabled object versioning; GCP also reports seven-day soft-delete protection.
+- Added separate GCS backend prefixes for foundation, primary-cluster, and secondary-cluster state.
