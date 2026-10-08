@@ -178,6 +178,8 @@ Exit criteria:
 
 **Goal:** Build reusable, reviewable infrastructure as code.
 
+**Status:** Foundation resources applied and verified on October 7, 2026. IAM identities for CI/CD remain a later, separately reviewed change.
+
 Tasks:
 
 - Establish Terraform provider and version constraints.
@@ -199,6 +201,8 @@ Exit criteria:
 ### Phase 3 — GKE clusters and application deployment
 
 **Goal:** Deploy both applications with resilient pod configurations.
+
+**Status:** Shared cluster Terraform is formatted and valid. The primary backend is initialized, its saved plan has been reviewed (`5 add, 0 change, 0 destroy`), and no cluster has been applied yet.
 
 Tasks:
 
@@ -375,9 +379,10 @@ Do not capture tokens, cookies, private keys, billing identifiers, or unredacted
 
 ## 10. Completion checklist
 
-- [ ] Desktop readiness fully complete.
-- [ ] Three repositories created and linked.
-- [ ] Two applications implemented, tested, and containerized.
+- [x] Desktop readiness fully complete.
+- [x] Three repositories created and linked.
+- [x] Two applications implemented, tested, and containerized.
+- [x] Terraform foundation applied and verified with no drift.
 - [ ] Terraform provisions the approved environment.
 - [ ] Two GKE clusters validated.
 - [ ] Both applications run with multiple replicas in both clusters.

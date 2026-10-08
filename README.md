@@ -9,6 +9,8 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Configuration inventory](docs/configuration-inventory.md)
 - [Bootstrap log](docs/bootstrap-log.md)
 - [Terraform state operations](docs/terraform-state.md)
+- [Foundation deployment evidence](docs/evidence/foundation-deployment.md)
+- [Primary cluster readiness](docs/primary-cluster-readiness.md)
 
 ## Repositories
 
@@ -18,4 +20,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-The Google Cloud project and cost controls are ready. The assessment plan defines the implementation sequence, acceptance criteria, evidence, and deliverables. Local toolchain completion is the next step before repository scaffolding and infrastructure development.
+Desktop readiness, repository setup, application foundations, and the Terraform foundation are complete. The deployed foundation includes the required APIs, custom VPC, two regional VPC-native subnets, and the Docker Artifact Registry repository. The next controlled stage is planning and applying the primary GKE cluster before publishing and deploying either application.

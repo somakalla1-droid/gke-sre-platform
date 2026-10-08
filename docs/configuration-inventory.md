@@ -20,9 +20,9 @@
 | Billing | Enabled | Verified |
 | Budget | `$25 USD` monthly | Verified |
 | Alert thresholds | 25%, 50%, 75%, and 100% | Verified |
-| Default region | `us-central1` | Proposed |
+| Primary region | `us-central1` | Verified deployment |
 | Default zone | `us-central1-a` | Proposed |
-| Secondary region | `us-east1` | Proposed |
+| Secondary region | `us-east1` | Verified deployment |
 | Secondary zone | `us-east1-b` | Proposed |
 
 The authenticated GCP account and billing account identifier are intentionally not stored in this repository. They can be verified locally with:
@@ -48,16 +48,21 @@ gcloud billing projects describe gke-sre-assesment
 - `monitoring.googleapis.com`
 - `serviceusage.googleapis.com`
 
-### Cloud configuration still to define
+### Cloud resource configuration
 
-| Setting | Proposed approach | Status |
+| Setting | Value | Status |
 | --- | --- | --- |
-| VPC name | `gke-assessment-vpc` | Proposed |
-| Primary subnet | `gke-primary-subnet` | Proposed |
-| Secondary subnet | `gke-secondary-subnet` | Proposed |
-| Primary cluster | `gke-primary` | Proposed |
-| Secondary cluster | `gke-secondary` | Proposed |
-| Artifact Registry repository | `gke-apps` | Proposed |
+| VPC name | `gke-assessment-vpc` | Verified |
+| VPC routing mode | Global | Verified |
+| Primary subnet | `gke-primary-subnet`, `us-central1`, `10.10.0.0/20` | Verified |
+| Primary pod range | `primary-pods`, `10.20.0.0/16` | Verified |
+| Primary service range | `primary-services`, `10.30.0.0/20` | Verified |
+| Secondary subnet | `gke-secondary-subnet`, `us-east1`, `10.40.0.0/20` | Verified |
+| Secondary pod range | `secondary-pods`, `10.50.0.0/16` | Verified |
+| Secondary service range | `secondary-services`, `10.60.0.0/20` | Verified |
+| Primary cluster | `gke-primary`, `us-central1-a`, one `e2-medium` node | Configured; not applied |
+| Secondary cluster | `gke-secondary`, `us-east1-b`, one `e2-medium` node | Configured; not applied |
+| Artifact Registry repository | `gke-apps`, Docker, `us-central1` | Verified |
 | Terraform state bucket | `gke-sre-assesment-tfstate-150538255871` | Verified |
 | BigQuery dataset | `gke_observability` | Proposed |
 | Log sink | `gke-bigquery-sink` | Proposed |
@@ -78,7 +83,7 @@ IP ranges, node/compute class, cluster release channel, and exact resource limit
 | Local Git branch | `main` | Verified |
 | Local Git author name | `Soma Kalla` | Verified |
 | Local Git author email | GitHub `noreply` address | Verified |
-| Current workspace remote | None | Pending repository association |
+| Current workspace remote | `https://github.com/somakalla1-droid/gke-sre-platform.git` | Verified |
 
 Tokens and token values must never appear in documentation, terminal captures, issues, commits, or CI variables printed to logs.
 
@@ -113,9 +118,9 @@ Expected contents:
 | URL | `https://github.com/somakalla1-droid/gke-request-info-service` | Verified |
 | Default branch | `main` | Verified |
 | Visibility | Public | Verified |
-| Local directory | `/Users/somakalla/Documents/ChatGPT/gke-request-info-service` | Proposed |
+| Local directory | `/Users/somakalla/Documents/ChatGPT/gke-request-info-service` | Verified |
 | Ownership | Application Team A | Proposed |
-| Runtime/language | To be selected | Pending |
+| Runtime/language | Go | Verified |
 
 Expected contents:
 
@@ -133,9 +138,9 @@ Expected contents:
 | URL | `https://github.com/somakalla1-droid/gke-response-service` | Verified |
 | Default branch | `main` | Verified |
 | Visibility | Public | Verified |
-| Local directory | `/Users/somakalla/Documents/ChatGPT/gke-response-service` | Proposed |
+| Local directory | `/Users/somakalla/Documents/ChatGPT/gke-response-service` | Verified |
 | Ownership | Application Team B | Proposed |
-| Runtime/language | To be selected | Pending |
+| Runtime/language | Go | Verified |
 
 Expected contents mirror Application A but retain an independent build, image, version, deployment, and release lifecycle.
 
@@ -171,11 +176,18 @@ Production deployment approval should be separate from image build/publish permi
 
 See [Desktop and Google Cloud Readiness](desktop-readiness.md) for versions and completion commands.
 
-## Decisions required before repository creation
+## Established implementation decisions
 
-1. Select the implementation language for both applications. Using the same language reduces assessment overhead; different languages demonstrate platform neutrality but increase maintenance.
-2. Confirm the proposed primary and secondary GCP regions.
-3. Decide whether both applications will own Helm charts or plain Kubernetes/Kustomize manifests.
+1. Both applications use Go to keep the assessment focused on delivery and operations.
+2. The primary and secondary regions are `us-central1` and `us-east1`.
+3. Each application repository owns its application source, Dockerfile, Helm chart, and CI lifecycle.
+4. The platform repository owns shared cloud infrastructure, cluster lifecycle, observability, and assessment documentation.
+
+## Foundation deployment status
+
+The foundation root was applied on October 7, 2026. The reviewed plan and apply both reported 12 additions, no changes, and no destructions. A post-apply refresh plan reported `No changes`, confirming that the deployed resources match the Terraform configuration. See [Foundation deployment evidence](evidence/foundation-deployment.md).
+
+The primary-cluster backend is initialized at `terraform/assessment/primary-cluster`, but its state is empty because the cluster has not been applied. See [Primary cluster readiness](primary-cluster-readiness.md).
 
 ## Verification commands
 
