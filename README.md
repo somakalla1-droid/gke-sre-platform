@@ -17,6 +17,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Google Secret Manager demo design](docs/secret-manager-demo.md)
 - [Response-service capacity incident](docs/evidence/response-service-capacity-incident.md)
 - [Response-service deployment evidence](docs/evidence/response-service-deployment.md)
+- [Request-service deployment and cross-service flow evidence](docs/evidence/request-service-deployment.md)
 
 ## Repositories
 
@@ -26,4 +27,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, and the response-service deployment are complete. The first response-service Helm release exposed a real scheduling-capacity incident; the Terraform-managed two-node correction and a numeric distroless security-context fix were verified by a successful two-pod deployment. The next controlled stage is deploying the request service and establishing the Application A-to-B flow.
+Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, and both primary-cluster application deployments are complete. Application A calls Application B through internal Kubernetes DNS, propagates `X-Request-ID`, and emits correlated structured logs. The next controlled stage is application observability evidence and an accessible endpoint, followed by the secondary-cluster phase.
