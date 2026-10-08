@@ -4,12 +4,15 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Documentation
 
+- [Original assignment requirements](docs/assignment-requirements.md)
+- [Requirements traceability](docs/requirements-traceability.md)
 - [Desktop and cloud readiness](docs/desktop-readiness.md)
 - [Assessment project plan](docs/project-plan.md)
 - [Configuration inventory](docs/configuration-inventory.md)
 - [Bootstrap log](docs/bootstrap-log.md)
 - [Terraform state operations](docs/terraform-state.md)
 - [Foundation deployment evidence](docs/evidence/foundation-deployment.md)
+- [Primary cluster deployment evidence](docs/evidence/primary-cluster-deployment.md)
 - [Primary cluster readiness](docs/primary-cluster-readiness.md)
 
 ## Repositories

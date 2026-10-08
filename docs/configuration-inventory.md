@@ -60,7 +60,7 @@ gcloud billing projects describe gke-sre-assesment
 | Secondary subnet | `gke-secondary-subnet`, `us-east1`, `10.40.0.0/20` | Verified |
 | Secondary pod range | `secondary-pods`, `10.50.0.0/16` | Verified |
 | Secondary service range | `secondary-services`, `10.60.0.0/20` | Verified |
-| Primary cluster | `gke-primary`, `us-central1-a`, one `e2-medium` node | Configured; not applied |
+| Primary cluster | `gke-primary`, `us-central1-a`, one `e2-medium` node | Verified deployment |
 | Secondary cluster | `gke-secondary`, `us-east1-b`, one `e2-medium` node | Configured; not applied |
 | Artifact Registry repository | `gke-apps`, Docker, `us-central1` | Verified |
 | Terraform state bucket | `gke-sre-assesment-tfstate-150538255871` | Verified |
