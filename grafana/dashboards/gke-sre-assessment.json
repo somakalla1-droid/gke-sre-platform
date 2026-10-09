@@ -1,0 +1,508 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_BIGQUERY",
+      "label": "Google BigQuery",
+      "description": "BigQuery data source configured for the assessment project",
+      "type": "datasource",
+      "pluginId": "grafana-bigquery-datasource",
+      "pluginName": "Google BigQuery"
+    },
+    {
+      "name": "DS_GCP_MONITORING",
+      "label": "Google Cloud Monitoring",
+      "description": "Google Cloud Monitoring data source configured for the assessment project",
+      "type": "datasource",
+      "pluginId": "stackdriver",
+      "pluginName": "Google Cloud Monitoring"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "grafana-bigquery-datasource",
+      "name": "Google BigQuery",
+      "version": "2.2.1"
+    },
+    {
+      "type": "datasource",
+      "id": "stackdriver",
+      "name": "Google Cloud Monitoring",
+      "version": "1.0.0"
+    }
+  ],
+  "annotations": {
+    "list": []
+  },
+  "description": "Required assessment signals from BigQuery application logs and Google Cloud Monitoring GKE metrics.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
+      "description": "Percentage of completed request-info requests with an HTTP status of 500 or greater.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "decimals": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "editorMode": "code",
+          "format": 0,
+          "location": "US",
+          "project": "gke-sre-assesment",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(timestamp, $__interval) AS time,\n  100 * SAFE_DIVIDE(\n    COUNTIF(SAFE_CAST(jsonPayload.status_code AS INT64) >= 500),\n    COUNT(*)\n  ) AS error_rate_percent\nFROM `gke-sre-assesment.assessment_app_logs.stdout_*`\nWHERE $__timeFilter(timestamp)\n  AND STARTS_WITH(resource.labels.pod_name, 'request-info-')\n  AND jsonPayload.status_code IS NOT NULL\nGROUP BY time\nORDER BY time",
+          "refId": "A"
+        }
+      ],
+      "title": "Application Error Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "${DS_GCP_MONITORING}"
+      },
+      "description": "Cumulative container restart count for each assessment application pod.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "${DS_GCP_MONITORING}"
+          },
+          "promQLQuery": {
+            "expr": "max by (pod_name) (kubernetes_io:container_restart_count{monitored_resource=\"k8s_container\",cluster_name=\"gke-primary\",namespace_name=\"assessment-apps\",container_name=\"application\"})",
+            "projectName": "gke-sre-assesment",
+            "step": "30s"
+          },
+          "queryType": "promQL",
+          "refId": "A"
+        }
+      ],
+      "title": "Pod Restart Count",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-bigquery-datasource",
+        "uid": "${DS_BIGQUERY}"
+      },
+      "description": "Request-info latency percentiles calculated from completed-request logs.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-bigquery-datasource",
+            "uid": "${DS_BIGQUERY}"
+          },
+          "editorMode": "code",
+          "format": 0,
+          "location": "US",
+          "project": "gke-sre-assesment",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroup(timestamp, $__interval) AS time,\n  APPROX_QUANTILES(SAFE_CAST(jsonPayload.latency_ms AS FLOAT64), 100)[OFFSET(50)] AS p50_ms,\n  APPROX_QUANTILES(SAFE_CAST(jsonPayload.latency_ms AS FLOAT64), 100)[OFFSET(95)] AS p95_ms,\n  APPROX_QUANTILES(SAFE_CAST(jsonPayload.latency_ms AS FLOAT64), 100)[OFFSET(99)] AS p99_ms\nFROM `gke-sre-assesment.assessment_app_logs.stdout_*`\nWHERE $__timeFilter(timestamp)\n  AND STARTS_WITH(resource.labels.pod_name, 'request-info-')\n  AND jsonPayload.latency_ms IS NOT NULL\nGROUP BY time\nORDER BY time",
+          "refId": "A"
+        }
+      ],
+      "title": "Request Latency Percentiles",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "${DS_GCP_MONITORING}"
+      },
+      "description": "CPU cores and memory bytes in use by each assessment application pod.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "cores"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bytes"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "${DS_GCP_MONITORING}"
+          },
+          "legendFormat": "CPU {{pod_name}}",
+          "promQLQuery": {
+            "expr": "sum by (pod_name) (rate(kubernetes_io:container_cpu_core_usage_time{monitored_resource=\"k8s_container\",cluster_name=\"gke-primary\",namespace_name=\"assessment-apps\",container_name=\"application\"}[5m]))",
+            "projectName": "gke-sre-assesment",
+            "step": "30s"
+          },
+          "queryType": "promQL",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "${DS_GCP_MONITORING}"
+          },
+          "legendFormat": "Memory {{pod_name}}",
+          "promQLQuery": {
+            "expr": "sum by (pod_name) (kubernetes_io:container_memory_used_bytes{monitored_resource=\"k8s_container\",cluster_name=\"gke-primary\",namespace_name=\"assessment-apps\",container_name=\"application\"})",
+            "projectName": "gke-sre-assesment",
+            "step": "30s"
+          },
+          "queryType": "promQL",
+          "refId": "B"
+        }
+      ],
+      "title": "Application CPU and Memory",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 41,
+  "tags": [
+    "assessment",
+    "gke",
+    "sre"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m"
+    ]
+  },
+  "timezone": "browser",
+  "title": "GKE SRE Assessment Observability",
+  "uid": "gke-sre-assessment",
+  "version": 1,
+  "weekStart": ""
+}
