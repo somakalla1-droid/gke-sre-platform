@@ -19,6 +19,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Response-service deployment evidence](docs/evidence/response-service-deployment.md)
 - [Request-service deployment and cross-service flow evidence](docs/evidence/request-service-deployment.md)
 - [External GKE Ingress runbook](docs/runbooks/external-gke-ingress.md)
+- [Multi-cluster Gateway readiness](docs/multi-cluster-gateway-readiness.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
@@ -34,4 +35,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, the primary GKE cluster, Secret Manager integration, both primary-cluster applications, and the public GKE Ingress are complete. Application A calls Application B through internal Kubernetes DNS and emits correlated structured logs. A filtered Logging sink now exports request records to BigQuery, where error-rate and latency-percentile queries are verified. The next controlled stage is the required Grafana dashboard, followed by Cloud Armor and the secondary-cluster/multi-cluster work.
+Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, the primary public GKE Ingress, BigQuery log analysis, and the Grafana dashboard are complete. Application A calls Application B through internal Kubernetes DNS and emits correlated structured logs in both regions. The next controlled stage is multi-cluster Gateway and failover validation, beginning with its Gateway API prerequisite.

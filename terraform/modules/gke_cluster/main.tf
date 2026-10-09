@@ -63,6 +63,12 @@ resource "google_container_cluster" "this" {
     }
   }
 
+  # Required before a cluster can participate in a GKE multi-cluster Gateway.
+  # The standard channel installs the stable Gateway API CRDs and controller.
+  gateway_api_config {
+    channel = "CHANNEL_STANDARD"
+  }
+
   secret_manager_config {
     enabled = true
 
