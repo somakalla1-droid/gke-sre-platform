@@ -1,7 +1,7 @@
 # Assessment Requirements Traceability
 
 **Baseline:** [GKE SRE Open-Book Assessment Requirements](assignment-requirements.md)  
-**Last assessed:** October 8, 2026  
+**Last assessed:** October 9, 2026
 **Purpose:** Track evidence, planned work, and approved free-tier constraints without treating planned configuration as deployed evidence.
 
 ## Status definitions
@@ -14,7 +14,7 @@
 
 ## Executive assessment
 
-The solution remains aligned with the assignment. The foundation, two regional GKE clusters, both applications in each cluster, the primary public endpoint, structured log export, BigQuery queries, and Grafana dashboard are deployed and verified. No required item has been abandoned; multi-cluster routing, scaling evidence, CI/CD hardening, and the remaining tracing, security, and DR controls are later phases.
+The solution remains aligned with the assignment. The foundation, two regional GKE clusters, both applications in each cluster, global multi-cluster HTTP routing and failover, Cloud Armor WAF, structured log export, BigQuery queries, and Grafana dashboard are deployed and verified. No required item has been abandoned; HTTPS/DNS, scaling evidence, CI/CD hardening, and the remaining tracing, security, and DR controls are later phases.
 
 The intentional assessment choices are two zonal Standard clusters with three `e2-medium` nodes each and a shared primary-region Artifact Registry repository. Three nodes per cluster were required to schedule the GKE system workloads and both two-replica applications with their declared resources and disruption budgets. These choices must be clearly distinguished from the regional-cluster and private-networking recommendations in the final production handoff.
 
@@ -26,23 +26,23 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | Terraform-reproducible infrastructure | In progress | Protected remote state; applied and drift-verified foundation, primary-cluster, and secondary-cluster roots; Terraform-managed BigQuery export | Add remaining traffic and security resources to Terraform. |
 | VPC with separated GKE subnets and alias ranges | Complete | Custom VPC; primary/secondary subnets; distinct node, pod, and service ranges | Add any explicit firewall rules required by ingress or private networking later. |
 | Two GKE clusters in separate regions | Complete | `gke-primary` is healthy in `us-central1-a`; `gke-secondary` is healthy in `us-east1-b`; each has three Ready nodes and isolated Terraform state | Retain drift and cleanup evidence. |
-| High availability / multi-region strategy | In progress | Both regional clusters run symmetric application stacks with independent subnets and internal service discovery | Implement and test traffic failover or document the closest feasible tested alternative. |
+| High availability / multi-region strategy | Complete | Both regional clusters run symmetric application stacks; the global Gateway had four healthy Pod backends; controlled primary endpoint withdrawal returned HTTP 200 from secondary and recovery restored both regions | Retain cleanup evidence and the [multi-cluster Gateway evidence](evidence/multi-cluster-gateway.md). |
 | Two independent web applications | Complete | Both immutable images are deployed with two replicas in each cluster; Application A calls Application B through internal service DNS in both regions | Retain rollout and cleanup evidence. |
 | Multi-pod deployments, HPA, probes, PDBs, and resource limits | In progress | Both services have verified two-pod deployments, HPA (2–5), probes, PDB, and resource limits in both clusters | Demonstrate load-driven HPA behavior; rollout and recovery are already verified in the primary cluster. |
 | ConfigMaps and Secrets for application configuration | Complete | Both charts provide application configuration in both clusters; each response deployment verifies a GKE Secret Manager CSI volume, with no secret value printed or mirrored into a Kubernetes Secret | Retain IAM and cleanup evidence. |
 | Artifact Registry | Complete | Docker repository `gke-apps` in `us-central1`; repository-scoped node image-pull IAM in both clusters; immutable response tag `02f767d7e54d` and request tag `2311689d057c` are deployed in both regions | Retain image and IAM evidence. |
 | CI build and publish lifecycle | Partially prepared | Both app CI workflows test, vet, lint Helm, and build Docker images | Add GitHub OIDC/Workload Identity Federation and image publishing with commit-SHA tags. No static keys. |
 | Workload Identity | In progress | Response-service pods in both clusters use `response-service-workload`, a secret-scoped principal, and the GKE Secret Manager CSI volume; pod readiness verifies the mount without reading its value | Add workload identities for other services only when they require GCP access. |
-| Accessible application endpoint | Complete for primary | GKE external Ingress routes public HTTP traffic to Application A; Application B remains private; correlated A-to-B request evidence returned HTTP 200 | Retain evidence and remove the billable endpoint during cleanup. |
-| Global HTTPS load balancing / MCI or MCS | In progress | A single-cluster external Application Load Balancer is verified; Application B remains private | DNS/certificate are required for HTTPS; multi-cluster routing follows secondary deployment. |
-| DNS, Cloud Armor, geographic routing, and Cloud NAT | Production recommendation / pending decision | Documented target architecture; no resources deployed | Cloud Armor and NAT introduce cost/complexity. Implement only if budget and feature access permit; otherwise document the production path and test the accessible endpoint without them. |
+| Accessible application endpoint | Complete | Existing primary Ingress remains available; global multi-cluster Gateway `136.81.84.189` returns HTTP 200 to Application A while Application B remains private and cluster-local | Retain both endpoints until HTTPS and final rollback evidence are complete. |
+| Global HTTPS load balancing / MCI or MCS | In progress | MCS exports from both clusters feed an accepted global external multi-cluster Gateway; health checks covered four Pods and controlled failover succeeded | Add owned DNS and a certificate for HTTPS edge termination; current verified endpoint is HTTP. |
+| DNS, Cloud Armor, geographic routing, and Cloud NAT | In progress | Terraform-managed Cloud Armor SQLi/XSS WAF is attached and returned HTTP 403 for a safe test; global Gateway routed to healthy backends in both regions and failed over successfully | DNS/TLS and Cloud NAT remain pending or require documented production rationale. |
 | Cloud Logging and Cloud Monitoring | In progress | GKE logging/monitoring are enabled; both applications emit correlated JSON logs; public request records were verified in Cloud Logging; both expose `/metrics` | Capture workload/node telemetry and Grafana evidence. |
 | BigQuery log analysis | Complete | Terraform-managed dataset and filtered sink; scoped writer IAM; real success/error/delay records; verified correlation, error-rate, and p50/p95/p99 queries | Connect the appropriate data source to Grafana and retain final dashboard evidence. |
 | Grafana dashboard with four required panels | Complete | Version-controlled dashboard JSON; verified BigQuery and Cloud Monitoring data sources; live errors, restarts, p50/p95/p99 latency, CPU, and memory panels; sanitized screenshot | Revoke temporary dashboard credentials during final cleanup after all assessment evidence is complete. |
 | Log-based error and latency analysis | Complete | Exported records contain `request_id`, `status_code`, and `latency_ms`; controlled queries returned a 25% sample error rate and p50/p95/p99 values | Use representative traffic for final dashboard screenshots; controlled evidence is not a production baseline. |
 | Cloud Trace, Profiler, and Error Reporting | Pending | Not instrumented | Add OpenTelemetry/Cloud Trace and determine free-trial feasibility for Profiler and Error Reporting; document any unsupported feature explicitly. |
 | Cross-service request flow | Complete | Application A calls B using Kubernetes internal DNS in both clusters; `assessment-flow-001` and `secondary-flow-001` produced HTTP 200 and correlated JSON logs | Add trace propagation when Cloud Trace is introduced. |
-| Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity and Secret Manager CSI with secret-scoped IAM | Cloud Armor and Binary Authorization remain pending; private-cluster production rationale must be documented. |
+| Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403 | Binary Authorization remains pending; private-cluster production rationale must be documented. |
 | Backups and disaster recovery | Pending | Two-cluster layout and cleanup strategy documented | Add a realistic assessment recovery runbook; document Cloud SQL/GKE/Artifact Registry backup production patterns. |
 | Troubleshooting scenario | Complete | [Response-service capacity incident](evidence/response-service-capacity-incident.md): initial Helm rollback, event-based diagnosis, Terraform node-capacity correction, numeric distroless identity correction, and successful retry | Retain commands and event evidence for final handoff. |
 | Architecture, setup, design-rationale, and cleanup documentation | In progress | Project plan, state operations, foundation evidence, primary readiness, and configuration inventory | Add architecture diagram, deployment/operations runbooks, BigQuery schema/query guide, DR/security rationale, and cleanup evidence. |
@@ -58,7 +58,7 @@ These corrections were completed before collecting the current application and l
 
 ## Current delivery gate
 
-The next delivery action is to review GKE multi-cluster feature eligibility, cost, DNS/TLS prerequisites, and rollback behavior, then implement and verify the selected routing/failover design. HPA scaling evidence follows without changing the existing application architecture.
+The next delivery actions are HTTPS/DNS disposition and HPA scaling evidence, followed by CI/CD identity hardening, tracing/error tooling feasibility, DR documentation, architecture diagram, and final cleanup evidence.
 
 ## Free-tier handling
 
