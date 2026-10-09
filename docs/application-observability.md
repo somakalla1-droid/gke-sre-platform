@@ -12,6 +12,7 @@ and evidence so that each boundary can be reviewed and rolled back.
 The foundation enables:
 
 - Cloud Trace API.
+- Telemetry API for native OTLP trace ingestion.
 - Cloud Profiler API.
 - Error Reporting API.
 
@@ -31,8 +32,9 @@ receives broader project permissions.
 
 The assessment implementation will:
 
-1. Initialize an OpenTelemetry tracer provider with the Google Cloud Trace
-   exporter.
+1. Initialize an OpenTelemetry tracer provider with the standard OTLP gRPC
+   exporter, Google Application Default Credentials, and the Google Cloud
+   Telemetry API endpoint.
 2. Add an HTTP server span around each inbound request.
 3. Add an HTTP client span for Application A's call to Application B.
 4. Propagate W3C `traceparent` and `tracestate` headers so both services appear
@@ -66,10 +68,11 @@ depend on an external telemetry backend.
 ## Assessment and production boundary
 
 Google recommends OpenTelemetry with an OTLP exporter and collector for a
-general production architecture. For this small assessment, direct application
-export to Cloud Trace is acceptable and reduces another continuously running
-collector workload. A production design should centralize sampling, retries,
-redaction, and multi-backend export in an OpenTelemetry Collector.
+general production architecture. For this small assessment, authenticated OTLP
+export directly to the Telemetry API is acceptable and reduces another
+continuously running collector workload. A production design should centralize
+sampling, retries, redaction, and multi-backend export in an OpenTelemetry
+Collector.
 
 References:
 

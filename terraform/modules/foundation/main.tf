@@ -9,6 +9,7 @@ locals {
     "logging.googleapis.com", "monitoring.googleapis.com",
     "secretmanager.googleapis.com",
     "sts.googleapis.com",
+    "telemetry.googleapis.com",
   ])
 
   application_observability_role_bindings = {
