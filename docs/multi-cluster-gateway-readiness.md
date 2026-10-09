@@ -125,6 +125,29 @@ IAM membership. The root uses the independent remote-state prefix
 `terraform/assessment/multi-cluster`. It does not create exported Services,
 Gateway routing resources, a public address, or a load balancer.
 
+### Service-agent dependency correction
+
+The first apply successfully created the five APIs, fleet, both memberships,
+and Multi-cluster Services, then stopped safely before enabling the Gateway
+controller. The IAM API rejected the controller role binding because the
+`multiclusteringress.googleapis.com` Google-managed service agent had not yet
+been materialized. API enablement and service-agent creation are separate
+eventually consistent operations.
+
+The root now declares `google_project_service_identity` through the official
+`google-beta` provider and uses its computed `member` in the IAM resource. This
+creates an explicit dependency chain:
+
+```text
+API -> service identity -> controller IAM -> Gateway controller feature
+```
+
+No manual identity or IAM command is required. The successfully created
+resources remain in remote state and are refreshed—not recreated—by the
+corrected follow-up plan. The corrected complete model contains twelve managed
+resources; only the service identity, IAM membership, and Gateway controller
+feature should remain to be added after the partial apply.
+
 ## Primary references
 
 - [Prepare your environment for multi-cluster Gateways](https://cloud.google.com/kubernetes-engine/docs/how-to/prepare-environment-multi-cluster-gateways)
