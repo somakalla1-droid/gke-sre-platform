@@ -51,6 +51,10 @@ resource "google_gke_hub_membership" "primary" {
     }
   }
 
+  authority {
+    issuer = "https://container.googleapis.com/v1/${data.google_container_cluster.primary.id}"
+  }
+
   labels = {
     environment = "assessment"
     role        = "primary"
@@ -68,6 +72,10 @@ resource "google_gke_hub_membership" "secondary" {
     gke_cluster {
       resource_link = "//container.googleapis.com/${data.google_container_cluster.secondary.id}"
     }
+  }
+
+  authority {
+    issuer = "https://container.googleapis.com/v1/${data.google_container_cluster.secondary.id}"
   }
 
   labels = {
