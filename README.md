@@ -24,6 +24,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
 - [Grafana assessment dashboard](docs/grafana-dashboard.md)
 - [Grafana dashboard evidence](docs/evidence/grafana-dashboard.md)
+- [Secondary GKE cluster readiness](docs/secondary-cluster-readiness.md)
 
 ## Repositories
 
