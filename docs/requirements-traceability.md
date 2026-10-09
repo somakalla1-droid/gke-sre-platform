@@ -32,7 +32,7 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | Multi-pod deployments, HPA, probes, PDBs, and resource limits | Complete | Both services have two-pod baselines, HPA (2–5), probes, PDB, and resource limits in both clusters; a bounded primary-cluster test drove both HPAs to five desired replicas, the response service reached five available replicas, and the request service reached three before fixed node capacity prevented the remaining two | Retain the [HPA scaling evidence](evidence/hpa-scaling.md); production must pair pod autoscaling with node autoscaling or reserved capacity. |
 | ConfigMaps and Secrets for application configuration | Complete | Both charts provide application configuration in both clusters; each response deployment verifies a GKE Secret Manager CSI volume, with no secret value printed or mirrored into a Kubernetes Secret | Retain IAM and cleanup evidence. |
 | Artifact Registry | Complete | Docker repository `gke-apps` in `us-central1`; repository-scoped node image-pull IAM in both clusters; immutable response tag `02f767d7e54d` and request tag `2311689d057c` are deployed in both regions | Retain image and IAM evidence. |
-| CI build and publish lifecycle | Partially prepared | Both app CI workflows test, vet, lint Helm, and build Docker images | Add GitHub OIDC/Workload Identity Federation and image publishing with commit-SHA tags. No static keys. |
+| CI build and publish lifecycle | Complete | Both app workflows test, vet, lint Helm, build, authenticate through GitHub OIDC/Workload Identity Federation, and publish commit-SHA images to GAR; both post-merge runs and immutable digests are recorded in the [publishing evidence](evidence/github-actions-image-publishing.md) | Keep deployment as a separately reviewed CD action; update action runtimes before the announced runner migration. |
 | Workload Identity | In progress | Response-service pods in both clusters use `response-service-workload`, a secret-scoped principal, and the GKE Secret Manager CSI volume; pod readiness verifies the mount without reading its value | Add workload identities for other services only when they require GCP access. |
 | Accessible application endpoint | Complete | Existing primary Ingress remains available; global multi-cluster Gateway `136.81.84.189` returns HTTP 200 to Application A while Application B remains private and cluster-local | Retain both endpoints until HTTPS and final rollback evidence are complete. |
 | Global HTTPS load balancing / MCI or MCS | In progress | MCS exports from both clusters feed an accepted global external multi-cluster Gateway; health checks covered four Pods and controlled failover succeeded | Add owned DNS and a certificate for HTTPS edge termination; current verified endpoint is HTTP. |
@@ -46,7 +46,7 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403 | Binary Authorization remains pending; private-cluster production rationale must be documented. |
 | Backups and disaster recovery | Pending | Two-cluster layout and cleanup strategy documented | Add a realistic assessment recovery runbook; document Cloud SQL/GKE/Artifact Registry backup production patterns. |
 | Troubleshooting scenario | Complete | [Response-service capacity incident](evidence/response-service-capacity-incident.md): initial Helm rollback, event-based diagnosis, Terraform node-capacity correction, numeric distroless identity correction, and successful retry | Retain commands and event evidence for final handoff. |
-| Architecture, setup, design-rationale, and cleanup documentation | In progress | Project plan, state operations, foundation evidence, primary readiness, configuration inventory, multi-cluster failover evidence, and HPA scaling evidence | Add architecture diagram, deployment/operations runbooks, BigQuery schema/query guide, DR/security rationale, and cleanup evidence. |
+| Architecture, setup, design-rationale, and cleanup documentation | In progress | Project plan, state operations, foundation evidence, primary readiness, configuration inventory, multi-cluster failover evidence, HPA scaling evidence, and keyless CI publication evidence | Add architecture diagram, deployment/operations runbooks, BigQuery schema/query guide, DR/security rationale, and cleanup evidence. |
 
 ## Completed application-evidence corrections
 
@@ -59,7 +59,7 @@ These corrections were completed before collecting the current application and l
 
 ## Current delivery gate
 
-The next delivery actions are HTTPS/DNS disposition and CI/CD identity hardening, followed by tracing/error tooling feasibility, DR documentation, architecture diagram, and final cleanup evidence.
+The next delivery actions are HTTPS/DNS disposition and tracing/error tooling feasibility, followed by DR documentation, architecture diagram, and final cleanup evidence.
 
 ## Free-tier handling
 

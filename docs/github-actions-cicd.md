@@ -61,7 +61,7 @@ The infrastructure and workflow changes are intentionally separated:
 This ordering prevents application pipelines from referencing an identity
 provider or service account that does not yet exist.
 
-## Planned workflow boundary
+## Implemented workflow boundary
 
 The publish job runs only after validation succeeds on a push to `main`:
 
@@ -75,6 +75,9 @@ It uses `google-github-actions/auth` with `token_format: access_token`, then
 passes that short-lived token to Docker for `us-central1-docker.pkg.dev`. The
 image tag is `${{ github.sha }}`. Deployment remains a separately reviewed CD
 step; publishing an image does not automatically change either GKE cluster.
+
+The completed workflow runs, immutable tags, and GAR digests are recorded in
+[GitHub Actions keyless image-publishing evidence](evidence/github-actions-image-publishing.md).
 
 ## Rollback and cleanup
 

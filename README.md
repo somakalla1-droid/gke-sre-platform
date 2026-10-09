@@ -23,6 +23,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Multi-cluster Gateway and failover evidence](docs/evidence/multi-cluster-gateway.md)
 - [HPA scaling evidence](docs/evidence/hpa-scaling.md)
 - [GitHub Actions keyless image publishing](docs/github-actions-cicd.md)
+- [GitHub Actions image-publishing evidence](docs/evidence/github-actions-image-publishing.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
@@ -38,4 +39,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, BigQuery log analysis, and the Grafana dashboard are complete. Application A calls Application B through internal Kubernetes DNS and emits correlated structured logs in both regions. The next controlled stage is keyless GitHub Actions image publishing, followed by the HTTPS/DNS disposition and remaining tracing, security, DR, architecture, and cleanup evidence.
+Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, keyless GitHub Actions image publishing, BigQuery log analysis, and the Grafana dashboard are complete. Application A calls Application B through internal Kubernetes DNS and emits correlated structured logs in both regions. The next controlled stage is the HTTPS/DNS disposition, followed by the remaining tracing, security, DR, architecture, and cleanup evidence.
