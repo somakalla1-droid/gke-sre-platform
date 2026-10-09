@@ -68,6 +68,53 @@ resource "google_artifact_registry_repository" "apps" {
   depends_on    = [google_project_service.required]
 }
 
+resource "google_compute_security_policy" "assessment_web_waf" {
+  project     = var.project_id
+  name        = "gke-assessment-web-waf"
+  description = "Cloud Armor WAF policy for the assessment's public multi-cluster application."
+  type        = "CLOUD_ARMOR"
+
+  rule {
+    action      = "deny(403)"
+    priority    = 1000
+    description = "Block SQL injection attempts using Google's stable preconfigured rule set."
+
+    match {
+      expr {
+        expression = "evaluatePreconfiguredWaf('sqli-v33-stable')"
+      }
+    }
+  }
+
+  rule {
+    action      = "deny(403)"
+    priority    = 1100
+    description = "Block cross-site scripting attempts using Google's stable preconfigured rule set."
+
+    match {
+      expr {
+        expression = "evaluatePreconfiguredWaf('xss-v33-stable')"
+      }
+    }
+  }
+
+  rule {
+    action      = "allow"
+    priority    = 2147483647
+    description = "Allow requests that do not match a WAF deny rule."
+
+    match {
+      versioned_expr = "SRC_IPS_V1"
+
+      config {
+        src_ip_ranges = ["*"]
+      }
+    }
+  }
+
+  depends_on = [google_project_service.required]
+}
+
 resource "google_bigquery_dataset" "assessment_app_logs" {
   project                     = var.project_id
   dataset_id                  = var.application_logs_dataset_id
