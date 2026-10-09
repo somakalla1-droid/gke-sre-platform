@@ -43,7 +43,7 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | BigQuery log analysis | Complete | Terraform-managed dataset and filtered sink; scoped writer IAM; real success/error/delay records; verified correlation, error-rate, and p50/p95/p99 queries | Connect the appropriate data source to Grafana and retain final dashboard evidence. |
 | Grafana dashboard with four required panels | Complete | Version-controlled dashboard JSON; verified BigQuery and Cloud Monitoring data sources; live errors, restarts, p50/p95/p99 latency, CPU, and memory panels; sanitized screenshot | Revoke temporary dashboard credentials during final cleanup after all assessment evidence is complete. |
 | Log-based error and latency analysis | Complete | Exported records contain `request_id`, `status_code`, and `latency_ms`; controlled queries returned a 25% sample error rate and p50/p95/p99 values | Use representative traffic for final dashboard screenshots; controlled evidence is not a production baseline. |
-| Cloud Trace, Profiler, and Error Reporting | Prepared | Terraform enables the three APIs and grants only Trace Agent and Profiler Agent to the exact application Kubernetes service accounts; the ordered instrumentation and evidence design is documented | Merge and apply the platform IAM, then instrument, publish, deploy, and verify distributed spans, an Error Reporting group, and live profiling samples. |
+| Cloud Trace, Profiler, and Error Reporting | In progress | Trace, Telemetry, Profiler, and Error Reporting APIs plus scoped workload IAM are applied; Application B uses authenticated OTLP and produced a verified primary-cluster server span, trace-correlated logs, and Error Reporting group `CIPGhZW4v5DPiQE`; see the [response-service evidence](evidence/response-service-observability.md) | Confirm a live profile, instrument Application A, prove the three-span distributed trace, and repeat on the secondary cluster. |
 | Cross-service request flow | Complete | Application A calls B using Kubernetes internal DNS in both clusters; `assessment-flow-001` and `secondary-flow-001` produced HTTP 200 and correlated JSON logs | Add trace propagation when Cloud Trace is introduced. |
 | Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403 | Binary Authorization remains pending; private-cluster production rationale must be documented. |
 | Backups and disaster recovery | Pending | Two-cluster layout and cleanup strategy documented | Add a realistic assessment recovery runbook; document Cloud SQL/GKE/Artifact Registry backup production patterns. |
@@ -57,11 +57,11 @@ These corrections were completed before collecting the current application and l
 1. Structured request logs include `status_code`, `latency_ms`, `request_id`, and appropriate severity.
 2. Helm charts provide ConfigMap-driven configuration, and the response service demonstrates Secret Manager CSI without copying secret contents into Kubernetes.
 3. Immutable commit-derived images are published for both applications. GitHub OIDC automation remains part of the CI/CD hardening work.
-4. Application A calls Application B and propagates `X-Request-ID`. Trace-context propagation remains part of Cloud Trace instrumentation.
+4. Application A calls Application B and propagates `X-Request-ID`. Application B now emits verified server spans; W3C trace-context propagation from Application A remains pending.
 
 ## Current delivery gate
 
-The next delivery actions are tracing/error tooling feasibility, DR documentation, architecture diagram, and final cleanup evidence. HTTPS/DNS and Cloud NAT have documented production dispositions and explicit revisit criteria.
+The next delivery actions are Application A trace propagation, live Profiler evidence, the secondary observability rollout, DR documentation, architecture diagram, and final cleanup evidence. HTTPS/DNS and Cloud NAT have documented production dispositions and explicit revisit criteria.
 
 ## Free-tier handling
 

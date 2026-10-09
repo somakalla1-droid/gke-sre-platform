@@ -26,6 +26,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [GitHub Actions image-publishing evidence](docs/evidence/github-actions-image-publishing.md)
 - [HTTPS, external DNS, and Cloud NAT disposition](docs/https-dns-disposition.md)
 - [Application tracing, profiling, and Error Reporting](docs/application-observability.md)
+- [Response-service observability evidence](docs/evidence/response-service-observability.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
@@ -41,4 +42,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, keyless GitHub Actions image publishing, BigQuery log analysis, and the Grafana dashboard are complete. Application A calls Application B through internal Kubernetes DNS and emits correlated structured logs in both regions. HTTPS/DNS and Cloud NAT have documented production dispositions. The next controlled stage is tracing and error-tooling feasibility, followed by the remaining security, DR, architecture, and cleanup evidence.
+Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, keyless GitHub Actions image publishing, BigQuery log analysis, and the Grafana dashboard are complete. Application B now exports verified primary-cluster traces and Error Reporting events through keyless workload identity. Application A calls Application B through internal Kubernetes DNS and emits correlated structured logs in both regions. HTTPS/DNS and Cloud NAT have documented production dispositions. The next controlled stage is Application A trace propagation and profiling evidence, followed by the remaining security, DR, architecture, and cleanup evidence.
