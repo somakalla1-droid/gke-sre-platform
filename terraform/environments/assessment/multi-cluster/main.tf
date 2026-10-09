@@ -8,10 +8,6 @@ locals {
   ])
 }
 
-data "google_project" "current" {
-  project_id = var.project_id
-}
-
 data "google_container_cluster" "primary" {
   project  = var.project_id
   name     = "gke-primary"
@@ -88,15 +84,25 @@ resource "google_gke_hub_feature" "multi_cluster_services" {
   ]
 }
 
+# API enablement does not guarantee that the Google-managed controller service
+# agent already exists when Terraform reaches the IAM resource. Materialize the
+# identity explicitly so the IAM binding has a concrete dependency and member.
+resource "google_project_service_identity" "multi_cluster_gateway_controller" {
+  provider = google-beta
+
+  project = var.project_id
+  service = "multiclusteringress.googleapis.com"
+
+  depends_on = [google_project_service.required]
+}
+
 # Google requires this service agent to reconcile Gateway and backend
 # resources in the member clusters. The role is prescribed by the GKE
 # multi-cluster Gateway setup guide.
 resource "google_project_iam_member" "multi_cluster_gateway_controller" {
   project = var.project_id
   role    = "roles/container.admin"
-  member  = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-multiclusteringress.iam.gserviceaccount.com"
-
-  depends_on = [google_project_service.required]
+  member  = google_project_service_identity.multi_cluster_gateway_controller.member
 }
 
 resource "google_gke_hub_feature" "multi_cluster_gateway" {
