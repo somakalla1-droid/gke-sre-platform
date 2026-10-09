@@ -79,11 +79,14 @@ projects/150538255871/secrets/gke-sre-response-demo-token/versions/latest
 The retry completed successfully. This incident demonstrates why rendered
 manifests must be inspected when Helm values contain long numeric identifiers.
 
-## Remaining evidence
+## Distributed-tracing follow-up
 
-- Confirm a live Cloud Profiler sample after sufficient collection time.
-- Instrument Application A and prove a single propagated trace containing its
-  inbound server span, outbound client span, and this downstream server span.
-- Roll the same immutable image to `gke-secondary` after primary verification.
-- Tune load-balancer health-check tracing or sampling after evidence capture to
-  avoid low-value trace volume.
+The response service was subsequently published as immutable image
+`7aa78243c6cb864d7decfe80646ded3f0641c7fe` and deployed in both clusters. The
+request service was instrumented and now propagates W3C trace context. A live
+request in each region produced one trace containing the request-service server
+span, its outbound client span, and this service's downstream server span.
+
+The complete primary and secondary results are retained in
+[distributed-tracing.md](distributed-tracing.md). A live Cloud Profiler sample
+is the only remaining evidence in this observability group.
