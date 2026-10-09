@@ -1,5 +1,8 @@
 # Secondary GKE Cluster Readiness
 
+> **Status:** Applied and verified on October 8, 2026. See
+> [Secondary Cluster and Application Deployment Evidence](evidence/secondary-cluster-deployment.md).
+
 ## Purpose
 
 Create the assessment's second GKE cluster in `us-east1-b` with the same
