@@ -39,6 +39,10 @@ curl --fail --silent --show-error \
 
 Do not place a real secret, credential, or token in the request ID.
 
+The first verified export created `stdout_20261009`. Cloud Logging may create a
+new date-suffixed table on later UTC dates, so discover the current table rather
+than hard-coding this name in automation.
+
 ## Querying exported logs
 
 Cloud Logging creates date-suffixed tables under the dataset. Inspect the dataset before using queries:
@@ -90,3 +94,8 @@ ORDER BY timestamp;
 ## Scope note
 
 This dataset supports BigQuery log analysis. Grafana pod restarts and CPU/memory panels should use GKE/Managed Prometheus metrics, while error-rate and latency panels can use this exported-log dataset.
+
+## Verified evidence
+
+The applied configuration and first query results are recorded in
+[BigQuery log-export evidence](evidence/bigquery-log-export.md).
