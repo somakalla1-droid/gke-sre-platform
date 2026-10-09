@@ -25,6 +25,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [GitHub Actions keyless image publishing](docs/github-actions-cicd.md)
 - [GitHub Actions image-publishing evidence](docs/evidence/github-actions-image-publishing.md)
 - [HTTPS, external DNS, and Cloud NAT disposition](docs/https-dns-disposition.md)
+- [Application tracing, profiling, and Error Reporting](docs/application-observability.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
