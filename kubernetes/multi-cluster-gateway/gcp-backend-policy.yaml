@@ -1,0 +1,12 @@
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: request-info-cloud-armor
+  namespace: assessment-apps
+spec:
+  default:
+    securityPolicy: gke-assessment-web-waf
+  targetRef:
+    group: net.gke.io
+    kind: ServiceImport
+    name: request-info-gke-request-info-service
