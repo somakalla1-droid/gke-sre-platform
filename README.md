@@ -21,6 +21,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [External GKE Ingress runbook](docs/runbooks/external-gke-ingress.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
+- [Grafana Cloud data-source setup](docs/grafana-cloud.md)
 
 ## Repositories
 
