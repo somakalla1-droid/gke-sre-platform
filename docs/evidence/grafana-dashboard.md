@@ -13,14 +13,16 @@ rendered successfully after dashboard JSON from merged platform PRs #18 and
 
 | Panel | Data source | Observed result |
 | --- | --- | --- |
-| Application Error Rate | BigQuery | Request completion series rendered; the 24-hour maximum was `0.88%` and the latest value was `0.00%` |
-| Pod Restart Count | Google Cloud Monitoring | Request and response workload pods rendered with a latest restart count of `0` |
-| Request Latency Percentiles | BigQuery | p50, p95, and p99 series rendered; the visible p99 maximum was `37 ms` |
+| Application Error Rate | BigQuery | Controlled traffic produced visible error spikes with a 15-minute maximum of `50.00%`; the latest value returned to `0.00%` |
+| Pod Restart Count | Google Cloud Monitoring | Old and new request/response rollout pods rendered with a restart count of `0`, which is expected because rolling updates replace pods |
+| Request Latency Percentiles | BigQuery | Controlled delayed requests produced visible p50, p95, and p99 peaks of approximately `751 ms` |
 | Application CPU and Memory | Google Cloud Monitoring | Per-pod CPU and memory series rendered with separate core and byte axes |
 
 These are controlled assessment observations, not production SLO baselines.
-The 24-hour view also includes superseded response pods from prior rollouts,
-which is expected for historical metrics.
+The final 15-minute evidence window includes superseded request and response
+pods from successful rolling updates, which is expected for historical
+metrics. Post-rollout end-to-end requests returned HTTP `200` through the
+request service to the response service.
 
 ## Implementation verification
 
