@@ -54,6 +54,15 @@ Application A returned HTTP `200`, called Application B in `33 ms`, and included
 
 The request-service log recorded `latency_ms: 33`; the response-service log recorded `latency_ms: 0` for its local request. This proves internal DNS connectivity, request-ID propagation, and correlation-ready logs without exposing either ClusterIP service publicly.
 
-## Remaining scope
+## Distributed-observability follow-up
 
-This is not yet the assessment's accessible external application endpoint, BigQuery log analysis, Grafana dashboard, or multi-cluster routing evidence. Those remain separate, explicitly tracked phases.
+The request service was subsequently published as immutable image
+`03ea1316292d2c605b73b67d0eb28f31d775d0ee` and deployed with observability
+enabled in both clusters. It now creates an inbound server span, creates an
+outbound HTTP client span, and propagates W3C trace context to the response
+service. The verified primary and secondary traces are documented in
+[distributed-tracing.md](distributed-tracing.md).
+
+The accessible endpoint, BigQuery analysis, Grafana dashboard, and
+multi-cluster routing are retained as separate evidence records so this initial
+deployment proof remains auditable.

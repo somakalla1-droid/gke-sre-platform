@@ -1,6 +1,6 @@
 # Secondary Cluster and Application Deployment Evidence
 
-**Verified:** October 8, 2026 (America/Chicago)  
+**Verified:** October 8, 2026; observability rollout verified October 9, 2026 (America/Chicago)
 **Terraform root:** `terraform/environments/assessment/secondary-cluster`  
 **GCP project:** `gke-sre-assesment`  
 **Cluster:** `gke-secondary` in `us-east1-b`  
@@ -29,8 +29,8 @@ Both applications were installed from immutable Artifact Registry images:
 
 | Release | Image tag | Verified state |
 | --- | --- | --- |
-| `response` | `02f767d7e54d` | Deployment `2/2`; two ready pods; ClusterIP Service; HPA 2–5; PDB `minAvailable: 1` |
-| `request-info` | `2311689d057c` | Deployment `2/2`; two ready pods; ClusterIP Service; HPA 2–5; PDB `minAvailable: 1` |
+| `response` | `7aa78243c6cb864d7decfe80646ded3f0641c7fe` | Deployment `2/2`; two ready pods with zero restarts; two ready Service endpoints; HPA 2–5; PDB `minAvailable: 1` |
+| `request-info` | `03ea1316292d2c605b73b67d0eb28f31d775d0ee` | Deployment `2/2`; two ready pods with zero restarts; ClusterIP Service; HPA 2–5 |
 
 The response release also created its ConfigMap, `response-service-workload`
 Kubernetes service account, and Secret Manager CSI `SecretProviderClass`.
@@ -65,6 +65,14 @@ code `200`, proving DNS resolution, service discovery, downstream connectivity,
 and request correlation in the secondary cluster. The disposable test pod was
 removed automatically after the request.
 
+The later observability rollout used request ID
+`secondary-distributed-trace-001`. It again returned HTTP 200 and identified
+both new immutable versions in `gke-secondary`. Cloud Logging retained
+trace-correlated records from both application pods, and Cloud Trace
+`e4273926c3c58b569329ccf2f74f7c23` contained the request-service server span,
+outbound HTTP client span, and response-service server span in the correct
+parent-child hierarchy. See [distributed-tracing.md](distributed-tracing.md).
+
 ## Connectivity observation
 
 The first verification attempt failed before creating the test pod because the
@@ -76,7 +84,7 @@ from an in-cluster service failure.
 
 ## Delivery boundary
 
-This evidence completes the two-cluster and two-application deployment phase.
-It does not yet prove cross-cluster ingress, geographic routing, or automatic
-failover. Those controls are the next delivery phase and require a separate
-review of GKE multi-cluster feature eligibility, cost, and rollback behavior.
+This evidence completes the secondary infrastructure, application, and
+distributed-observability rollout. Cross-cluster ingress, geographic routing,
+and controlled regional failover are proven separately in
+[multi-cluster-gateway.md](multi-cluster-gateway.md).
