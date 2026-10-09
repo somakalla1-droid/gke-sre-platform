@@ -43,7 +43,7 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | BigQuery log analysis | Complete | Terraform-managed dataset and filtered sink; scoped writer IAM; real success/error/delay records; verified correlation, error-rate, and p50/p95/p99 queries | Connect the appropriate data source to Grafana and retain final dashboard evidence. |
 | Grafana dashboard with four required panels | Complete | Version-controlled dashboard JSON; verified BigQuery and Cloud Monitoring data sources; live errors, restarts, p50/p95/p99 latency, CPU, and memory panels; sanitized screenshot | Revoke temporary dashboard credentials during final cleanup after all assessment evidence is complete. |
 | Log-based error and latency analysis | Complete | Exported records contain `request_id`, `status_code`, and `latency_ms`; controlled queries returned a 25% sample error rate and p50/p95/p99 values | Use representative traffic for final dashboard screenshots; controlled evidence is not a production baseline. |
-| Cloud Trace, Profiler, and Error Reporting | In progress | Trace, Telemetry, Profiler, and Error Reporting APIs plus scoped workload IAM are applied; Error Reporting group `CIPGhZW4v5DPiQE` is verified; three-span distributed traces and trace-correlated logs are verified in both clusters; see the [response-service evidence](evidence/response-service-observability.md) and [distributed-tracing evidence](evidence/distributed-tracing.md) | Confirm and retain a live Cloud Profiler sample. |
+| Cloud Trace, Profiler, and Error Reporting | Complete | Error Reporting group `CIPGhZW4v5DPiQE`; three-span distributed traces in both clusters; trace-correlated logs; live request/response CPU profiles; and a live response heap profile are verified through scoped workload identity | Retain the [response-service](evidence/response-service-observability.md), [distributed-tracing](evidence/distributed-tracing.md), and [Cloud Profiler](evidence/cloud-profiler.md) evidence. |
 | Cross-service request flow | Complete | Application A calls B using Kubernetes internal DNS in both clusters; HTTP 200, request-ID correlation, W3C trace-context propagation, and one three-span distributed trace are verified in each region | Retain the [distributed-tracing evidence](evidence/distributed-tracing.md). |
 | Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403 | Binary Authorization remains pending; private-cluster production rationale must be documented. |
 | Backups and disaster recovery | Pending | Two-cluster layout and cleanup strategy documented | Add a realistic assessment recovery runbook; document Cloud SQL/GKE/Artifact Registry backup production patterns. |
@@ -61,7 +61,7 @@ These corrections were completed before collecting the current application and l
 
 ## Current delivery gate
 
-The next delivery actions are live Profiler evidence, DR documentation, architecture diagram, remaining security decisions, and final cleanup evidence. HTTPS/DNS and Cloud NAT have documented production dispositions and explicit revisit criteria.
+The next delivery actions are DR documentation, architecture diagram, remaining security decisions, and final cleanup evidence. HTTPS/DNS and Cloud NAT have documented production dispositions and explicit revisit criteria.
 
 ## Free-tier handling
 

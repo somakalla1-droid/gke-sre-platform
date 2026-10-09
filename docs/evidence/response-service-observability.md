@@ -88,5 +88,7 @@ request in each region produced one trace containing the request-service server
 span, its outbound client span, and this service's downstream server span.
 
 The complete primary and secondary results are retained in
-[distributed-tracing.md](distributed-tracing.md). A live Cloud Profiler sample
-is the only remaining evidence in this observability group.
+[distributed-tracing.md](distributed-tracing.md). Live response CPU and heap
+profiles, plus the request-service CPU profile, are retained in
+[cloud-profiler.md](cloud-profiler.md). This completes the combined tracing,
+profiling, and Error Reporting evidence group.
