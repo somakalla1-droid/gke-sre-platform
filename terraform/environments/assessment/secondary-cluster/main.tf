@@ -15,4 +15,8 @@ module "cluster" {
 
   artifact_registry_location   = "us-central1"
   artifact_registry_repository = "gke-apps"
+
+  # Match the proven primary capacity so both two-replica applications and
+  # GKE system add-ons remain schedulable in the secondary region.
+  node_count = 3
 }
