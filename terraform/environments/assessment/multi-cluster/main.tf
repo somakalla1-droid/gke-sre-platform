@@ -1,5 +1,6 @@
 locals {
   services = toset([
+    "connectgateway.googleapis.com",
     "dns.googleapis.com",
     "gkehub.googleapis.com",
     "multiclusteringress.googleapis.com",
