@@ -4,3 +4,5 @@ output "secondary_subnet_name" { value = google_compute_subnetwork.secondary.nam
 output "artifact_registry_repository" { value = google_artifact_registry_repository.apps.repository_id }
 output "response_demo_secret_id" { value = google_secret_manager_secret.response_demo_token.secret_id }
 output "response_demo_secret_name" { value = google_secret_manager_secret.response_demo_token.name }
+output "application_logs_dataset_id" { value = google_bigquery_dataset.assessment_app_logs.dataset_id }
+output "application_request_log_sink_name" { value = google_logging_project_sink.assessment_app_requests.name }
