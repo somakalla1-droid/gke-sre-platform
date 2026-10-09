@@ -58,6 +58,11 @@ If a BigQuery panel is empty, first widen the time range and confirm a matching
 Explore with the same Cloud Monitoring data source and confirm the cluster,
 namespace, and container labels.
 
+The Cloud Monitoring target includes both `promQLQuery` and the plugin's
+companion `timeSeriesList` structure. Although PromQL is the active query type,
+the companion structure is required to prevent Grafana's dashboard importer
+from migrating the target back to the default Builder query.
+
 ## Evidence and credential cleanup
 
 After verification:
