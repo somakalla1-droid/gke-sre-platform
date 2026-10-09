@@ -1,6 +1,8 @@
 locals {
   services = toset([
     "artifactregistry.googleapis.com", "bigquery.googleapis.com",
+    "clouderrorreporting.googleapis.com", "cloudprofiler.googleapis.com",
+    "cloudtrace.googleapis.com",
     "compute.googleapis.com", "container.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com", "iamcredentials.googleapis.com",
@@ -8,6 +10,19 @@ locals {
     "secretmanager.googleapis.com",
     "sts.googleapis.com",
   ])
+
+  application_observability_role_bindings = {
+    for binding in setproduct(
+      var.application_observability_service_accounts,
+      toset([
+        "roles/cloudprofiler.agent",
+        "roles/cloudtrace.agent",
+      ])
+      ) : "${binding[0]}|${binding[1]}" => {
+      service_account = binding[0]
+      role            = binding[1]
+    }
+  }
 }
 
 data "google_project" "current" {
@@ -259,4 +274,14 @@ resource "google_secret_manager_secret_iam_member" "response_demo_accessor" {
   secret_id = google_secret_manager_secret.response_demo_token.id
   role      = "roles/secretmanager.secretAccessor"
   member    = "principal://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/${var.application_namespace}/sa/${var.response_service_account_name}"
+}
+
+resource "google_project_iam_member" "application_observability_agents" {
+  for_each = local.application_observability_role_bindings
+
+  project = var.project_id
+  role    = each.value.role
+  member  = "principal://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/${var.application_namespace}/sa/${each.value.service_account}"
+
+  depends_on = [google_project_service.required]
 }

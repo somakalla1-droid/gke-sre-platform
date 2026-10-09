@@ -20,6 +20,15 @@ variable "response_demo_secret_id" {
   default     = "gke-sre-response-demo-token"
 }
 
+variable "application_observability_service_accounts" {
+  description = "Kubernetes service accounts permitted to write application traces and profiles."
+  type        = set(string)
+  default = [
+    "request-info-gke-request-info-service",
+    "response-service-workload",
+  ]
+}
+
 variable "application_logs_dataset_id" {
   description = "BigQuery dataset ID for exported assessment application request logs."
   type        = string
