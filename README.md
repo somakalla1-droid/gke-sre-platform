@@ -23,6 +23,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
 - [Grafana assessment dashboard](docs/grafana-dashboard.md)
+- [Grafana dashboard evidence](docs/evidence/grafana-dashboard.md)
 
 ## Repositories
 
