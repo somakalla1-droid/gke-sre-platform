@@ -36,3 +36,32 @@ variable "application_logs_retention_days" {
     error_message = "application_logs_retention_days must be between 1 and 365."
   }
 }
+
+variable "github_repository_owner" {
+  description = "GitHub owner allowed by the Actions OIDC provider."
+  type        = string
+  default     = "somakalla1-droid"
+}
+
+variable "github_repository_owner_id" {
+  description = "Immutable GitHub numeric owner ID allowed by the Actions OIDC provider."
+  type        = string
+  default     = "261697749"
+}
+
+variable "github_publisher_repositories" {
+  description = "Full GitHub repository names permitted to impersonate the Artifact Registry publisher."
+  type        = set(string)
+  default = [
+    "somakalla1-droid/gke-request-info-service",
+    "somakalla1-droid/gke-response-service",
+  ]
+
+  validation {
+    condition = alltrue([
+      for repository in var.github_publisher_repositories :
+      startswith(repository, "${var.github_repository_owner}/")
+    ])
+    error_message = "Every publisher repository must belong to github_repository_owner."
+  }
+}

@@ -6,6 +6,7 @@ locals {
     "iam.googleapis.com", "iamcredentials.googleapis.com",
     "logging.googleapis.com", "monitoring.googleapis.com",
     "secretmanager.googleapis.com",
+    "sts.googleapis.com",
   ])
 }
 
@@ -66,6 +67,62 @@ resource "google_artifact_registry_repository" "apps" {
   repository_id = "gke-apps"
   format        = "DOCKER"
   depends_on    = [google_project_service.required]
+}
+
+resource "google_iam_workload_identity_pool" "github_actions" {
+  project                   = var.project_id
+  workload_identity_pool_id = "github-actions"
+  display_name              = "GitHub Actions"
+  description               = "Keyless CI identity pool for the assessment application repositories."
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_iam_workload_identity_pool_provider" "github_actions" {
+  project                            = var.project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github_actions.workload_identity_pool_id
+  workload_identity_pool_provider_id = "github"
+  display_name                       = "GitHub Actions OIDC"
+  description                        = "Trust GitHub Actions on the default branch of the assessment owner."
+
+  attribute_mapping = {
+    "google.subject"                = "assertion.sub"
+    "attribute.repository"          = "assertion.repository"
+    "attribute.repository_owner"    = "assertion.repository_owner"
+    "attribute.repository_owner_id" = "assertion.repository_owner_id"
+    "attribute.ref"                 = "assertion.ref"
+  }
+
+  attribute_condition = "assertion.repository_owner_id == '${var.github_repository_owner_id}' && assertion.ref == 'refs/heads/main'"
+
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com/"
+  }
+}
+
+resource "google_service_account" "github_artifact_publisher" {
+  project      = var.project_id
+  account_id   = "github-artifact-publisher"
+  display_name = "GitHub Artifact Registry publisher"
+  description  = "Keyless GitHub Actions identity scoped to publishing assessment application images."
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_artifact_registry_repository_iam_member" "github_artifact_publisher" {
+  project    = var.project_id
+  location   = google_artifact_registry_repository.apps.location
+  repository = google_artifact_registry_repository.apps.repository_id
+  role       = "roles/artifactregistry.writer"
+  member     = "serviceAccount:${google_service_account.github_artifact_publisher.email}"
+}
+
+resource "google_service_account_iam_member" "github_artifact_publisher" {
+  for_each = var.github_publisher_repositories
+
+  service_account_id = google_service_account.github_artifact_publisher.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_actions.name}/attribute.repository/${each.value}"
 }
 
 resource "google_compute_security_policy" "assessment_web_waf" {
