@@ -206,6 +206,27 @@ the same cluster, membership name, and fleet is successful and ensures
 Workload Identity is enabled. After both commands finish, a fresh Terraform
 plan must show no membership replacement before any further apply.
 
+Both memberships were reconciled successfully with no replacement, remained
+`READY`, and gained the expected issuer, identity provider, and fleet workload
+identity pool. Terraform subsequently reported no changes. A controller
+restart still reproduced `Lost connection`, which ruled out missing membership
+identity as the final cause.
+
+### Controller service-agent role correction
+
+The Google-managed Multi-Cluster Ingress service identity existed and had the
+documented `roles/container.admin` grant, but it did not have its product role,
+`roles/multiclusteringress.serviceAgent`. That role contains the
+`gkehub.gateway.*` permissions used to connect through Fleet Gateway as well as
+the load-balancer permissions used by the hosted controller. The Terraform root
+now grants this role to the computed service identity and makes the Gateway
+feature depend on both controller IAM bindings.
+
+This change adds one IAM membership. It does not replace a fleet membership,
+cluster, workload, or load balancer. After applying it, verify controller
+membership status and multi-cluster GatewayClasses before considering another
+feature restart.
+
 ## Primary references
 
 - [Prepare your environment for multi-cluster Gateways](https://cloud.google.com/kubernetes-engine/docs/how-to/prepare-environment-multi-cluster-gateways)

@@ -129,6 +129,15 @@ resource "google_project_iam_member" "multi_cluster_gateway_controller" {
   member  = google_project_service_identity.multi_cluster_gateway_controller.member
 }
 
+# API enablement materializes the service identity but does not guarantee that
+# its product-specific service-agent role is bound. This role contains the
+# Connect Gateway and load-balancer permissions used by the hosted controller.
+resource "google_project_iam_member" "multi_cluster_gateway_service_agent" {
+  project = var.project_id
+  role    = "roles/multiclusteringress.serviceAgent"
+  member  = google_project_service_identity.multi_cluster_gateway_controller.member
+}
+
 resource "google_gke_hub_feature" "multi_cluster_gateway" {
   project  = var.project_id
   location = "global"
@@ -143,5 +152,6 @@ resource "google_gke_hub_feature" "multi_cluster_gateway" {
   depends_on = [
     google_gke_hub_feature.multi_cluster_services,
     google_project_iam_member.multi_cluster_gateway_controller,
+    google_project_iam_member.multi_cluster_gateway_service_agent,
   ]
 }
