@@ -110,6 +110,21 @@ adds `gateway_api_config.channel = "CHANNEL_STANDARD"`. No node pool, workload,
 network, IAM, or cluster replacement is planned. Create fresh saved plans from
 merged `main` immediately before applying them.
 
+After both cluster updates were applied and drift-verified, the isolated
+`terraform/environments/assessment/multi-cluster` root was validated and
+planned. Its initial plan is:
+
+```text
+Plan: 11 to add, 0 to change, 0 to destroy.
+```
+
+The eleven resources are five required APIs, the default fleet, two regional
+cluster memberships, Multi-cluster Services, the multi-cluster Gateway
+controller feature, and the controller's documented `roles/container.admin`
+IAM membership. The root uses the independent remote-state prefix
+`terraform/assessment/multi-cluster`. It does not create exported Services,
+Gateway routing resources, a public address, or a load balancer.
+
 ## Primary references
 
 - [Prepare your environment for multi-cluster Gateways](https://cloud.google.com/kubernetes-engine/docs/how-to/prepare-environment-multi-cluster-gateways)
