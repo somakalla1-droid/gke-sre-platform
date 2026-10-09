@@ -127,5 +127,7 @@ response services.
 
 The previous single-cluster Ingress at `136.81.197.123` remains available as a
 rollback endpoint. The new Gateway is HTTP-only. DNS ownership, a certificate,
-and HTTPS edge termination remain required before claiming the assignment's
-HTTPS flow is complete.
+and HTTPS edge termination were not deployed because the assessment owner has
+no public domain or delegated subdomain. The closest feasible evidence and
+production implementation are documented in the
+[HTTPS/DNS disposition](../https-dns-disposition.md).
