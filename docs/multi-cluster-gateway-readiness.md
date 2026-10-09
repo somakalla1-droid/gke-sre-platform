@@ -21,13 +21,16 @@ Google's recommended API for a new deployment.
 | Network | Both clusters are VPC-native and use `gke-assessment-vpc` |
 | HTTP load balancing add-on | Enabled on both clusters |
 | Workload Identity Federation for GKE | Enabled on both clusters |
+| Fleet memberships | Both regional memberships are `READY` and report current Kubernetes metadata |
+| Multi-cluster Services | `ACTIVE`; both membership states are `OK` and the MCS importers are running |
 | Namespace and Service sameness | `assessment-apps` and the request Service have matching names in both clusters |
 | Cluster health | Three Ready nodes and two ready request replicas in each cluster |
 | gcloud version | `587.0.0`, above the documented fleet-registration minimum |
 
-The GKE Hub API is not yet enabled, neither cluster is registered to a fleet,
-and no multi-cluster controller is enabled. Those are intentional pending
-changes, not failures.
+The multi-cluster Gateway feature is `ACTIVE`, but its per-membership status
+reports `ERROR: Lost connection`. The exported multi-cluster GatewayClasses
+are therefore not available yet, and no Gateway routing resources should be
+created until both membership states become `OK`.
 
 ## Ordered implementation
 
@@ -118,7 +121,8 @@ planned. Its initial plan is:
 Plan: 11 to add, 0 to change, 0 to destroy.
 ```
 
-The eleven resources are five required APIs, the default fleet, two regional
+The root enables six required APIs, including the Connect Gateway API, and
+manages the default fleet, two regional
 cluster memberships, Multi-cluster Services, the multi-cluster Gateway
 controller feature, and the controller's documented `roles/container.admin`
 IAM membership. The root uses the independent remote-state prefix
@@ -164,6 +168,23 @@ The root grants `roles/compute.networkViewer` to the fleet Workload Identity
 principal `gke-mcs/gke-mcs-importer`. This read-only fleet control-plane grant
 does not expose an application, create a load balancer, or grant an application
 workload additional access.
+
+### Connect Gateway prerequisite correction
+
+After applying the MCS importer permission, Multi-cluster Services became
+healthy for both memberships, but the Multi-cluster Gateway controller
+continued to report `Lost connection`. Replacing only the Terraform-managed
+Gateway controller feature reproduced the same error without affecting either
+cluster, any application workload, or the existing primary Ingress.
+
+The next diagnostic check found that Fleet Workload Identity was already
+`ACTIVE` but the documented `connectgateway.googleapis.com` prerequisite was
+not enabled. The multi-cluster Terraform root now manages this API alongside
+the other fleet APIs. This is an additive project-service change; it does not
+replace fleet memberships, clusters, or workloads. After applying it, verify
+that both Gateway membership states are `OK` and that accepted `*-mc`
+GatewayClasses appear before creating `ServiceExport`, `Gateway`, or
+`HTTPRoute` resources.
 
 ## Primary references
 
