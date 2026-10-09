@@ -163,8 +163,8 @@ this would destroy and recreate both membership resources. That destructive
 plan was rejected and must not be applied. Both GKE clusters already use the
 fleet host project's GKE Workload Identity pool.
 
-The fleet host project still requires the documented MCS importer permission.
-The root grants `roles/compute.networkViewer` to the fleet Workload Identity
+The fleet host project requires the documented MCS importer permission. The
+root grants `roles/compute.networkViewer` to the fleet Workload Identity
 principal `gke-mcs/gke-mcs-importer`. This read-only fleet control-plane grant
 does not expose an application, create a load balancer, or grant an application
 workload additional access.
@@ -185,6 +185,26 @@ replace fleet memberships, clusters, or workloads. After applying it, verify
 that both Gateway membership states are `OK` and that accepted `*-mc`
 GatewayClasses appear before creating `ServiceExport`, `Gateway`, or
 `HTTPRoute` resources.
+
+### Fleet membership identity migration
+
+Enabling the Connect Gateway API made direct Connect Gateway access to both
+memberships successful, proving that the fleet can reach and authenticate to
+both Kubernetes API servers. The multi-cluster Gateway controller still
+reported `Lost connection`, however, and neither Membership object contained
+an `authority` field. The clusters have Workload Identity Federation for GKE,
+but their original Terraform registration did not enable identity on the fleet
+membership itself.
+
+The membership resources now declare their cluster issuer in an `authority`
+block. Applying that configuration directly to the existing memberships would
+replace them, so that destructive plan must not be applied. Instead, after this
+configuration is merged, reconcile each existing membership in place with the
+idempotent Google Cloud registration command and
+`--enable-workload-identity`. Google documents that rerunning registration for
+the same cluster, membership name, and fleet is successful and ensures
+Workload Identity is enabled. After both commands finish, a fresh Terraform
+plan must show no membership replacement before any further apply.
 
 ## Primary references
 
