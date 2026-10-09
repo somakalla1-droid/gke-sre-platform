@@ -8,6 +8,10 @@ locals {
   ])
 }
 
+data "google_project" "current" {
+  project_id = var.project_id
+}
+
 data "google_container_cluster" "primary" {
   project  = var.project_id
   name     = "gke-primary"
@@ -82,6 +86,17 @@ resource "google_gke_hub_feature" "multi_cluster_services" {
     google_gke_hub_membership.primary,
     google_gke_hub_membership.secondary,
   ]
+}
+
+# The fleet MCS importer discovers network endpoints and requires read-only
+# network visibility in the fleet host project. Both clusters already use the
+# fleet host project's GKE Workload Identity pool.
+resource "google_project_iam_member" "mcs_importer_network_viewer" {
+  project = var.project_id
+  role    = "roles/compute.networkViewer"
+  member  = "principal://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.project_id}.svc.id.goog/subject/ns/gke-mcs/sa/gke-mcs-importer"
+
+  depends_on = [google_gke_hub_feature.multi_cluster_services]
 }
 
 # API enablement does not guarantee that the Google-managed controller service

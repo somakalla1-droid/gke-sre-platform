@@ -148,6 +148,23 @@ corrected follow-up plan. The corrected complete model contains twelve managed
 resources; only the service identity, IAM membership, and Gateway controller
 feature should remain to be added after the partial apply.
 
+### Fleet membership connectivity review
+
+After the controller feature became `ACTIVE`, the base fleet memberships were
+`READY` and MCS APIs were installed in both clusters, while the Gateway
+feature's per-membership status temporarily reported `ERROR: Lost connection`.
+The first diagnostic plan considered adding fleet Workload Identity authority
+blocks to the existing memberships, but the provider correctly showed that
+this would destroy and recreate both membership resources. That destructive
+plan was rejected and must not be applied. Both GKE clusters already use the
+fleet host project's GKE Workload Identity pool.
+
+The fleet host project still requires the documented MCS importer permission.
+The root grants `roles/compute.networkViewer` to the fleet Workload Identity
+principal `gke-mcs/gke-mcs-importer`. This read-only fleet control-plane grant
+does not expose an application, create a load balancer, or grant an application
+workload additional access.
+
 ## Primary references
 
 - [Prepare your environment for multi-cluster Gateways](https://cloud.google.com/kubernetes-engine/docs/how-to/prepare-environment-multi-cluster-gateways)
