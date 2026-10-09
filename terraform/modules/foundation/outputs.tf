@@ -6,3 +6,6 @@ output "response_demo_secret_id" { value = google_secret_manager_secret.response
 output "response_demo_secret_name" { value = google_secret_manager_secret.response_demo_token.name }
 output "application_logs_dataset_id" { value = google_bigquery_dataset.assessment_app_logs.dataset_id }
 output "application_request_log_sink_name" { value = google_logging_project_sink.assessment_app_requests.name }
+output "grafana_observability_service_account_email" {
+  value = google_service_account.grafana_observability.email
+}

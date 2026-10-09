@@ -2,6 +2,7 @@ locals {
   services = toset([
     "artifactregistry.googleapis.com", "bigquery.googleapis.com",
     "compute.googleapis.com", "container.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com", "iamcredentials.googleapis.com",
     "logging.googleapis.com", "monitoring.googleapis.com",
     "secretmanager.googleapis.com",
@@ -104,6 +105,33 @@ resource "google_bigquery_dataset_iam_member" "assessment_app_requests_writer" {
   dataset_id = google_bigquery_dataset.assessment_app_logs.dataset_id
   role       = "roles/bigquery.dataEditor"
   member     = google_logging_project_sink.assessment_app_requests.writer_identity
+}
+
+resource "google_service_account" "grafana_observability" {
+  project      = var.project_id
+  account_id   = "grafana-observability"
+  display_name = "Grafana assessment observability"
+  description  = "Read-only identity for the assessment Grafana Cloud data sources."
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_project_iam_member" "grafana_observability" {
+  for_each = toset([
+    "roles/bigquery.jobUser",
+    "roles/monitoring.viewer",
+  ])
+
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.grafana_observability.email}"
+}
+
+resource "google_bigquery_dataset_iam_member" "grafana_application_logs_reader" {
+  project    = var.project_id
+  dataset_id = google_bigquery_dataset.assessment_app_logs.dataset_id
+  role       = "roles/bigquery.dataViewer"
+  member     = "serviceAccount:${google_service_account.grafana_observability.email}"
 }
 
 resource "google_secret_manager_secret" "response_demo_token" {
