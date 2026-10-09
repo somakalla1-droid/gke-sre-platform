@@ -10,3 +10,9 @@ output "application_request_log_sink_name" { value = google_logging_project_sink
 output "grafana_observability_service_account_email" {
   value = google_service_account.grafana_observability.email
 }
+output "github_actions_workload_identity_provider" {
+  value = google_iam_workload_identity_pool_provider.github_actions.name
+}
+output "github_artifact_publisher_service_account_email" {
+  value = google_service_account.github_artifact_publisher.email
+}
