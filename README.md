@@ -31,6 +31,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Distributed tracing evidence](docs/evidence/distributed-tracing.md)
 - [Cloud Profiler evidence](docs/evidence/cloud-profiler.md)
 - [Binary Authorization audit-first rollout](docs/binary-authorization.md)
+- [Binary Authorization audit evidence](docs/evidence/binary-authorization-audit.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)

@@ -159,6 +159,9 @@ gcloud logging read --order=desc \
 Retain sanitized evidence showing the violation was evaluated, logged, and not
 blocked. Do not move to enforcement if no audit decision is visible.
 
+The completed two-cluster test is recorded in
+[Binary Authorization Audit Evidence](evidence/binary-authorization-audit.md).
+
 ## Next phase: attest before enforcing
 
 After the audit phase succeeds:
