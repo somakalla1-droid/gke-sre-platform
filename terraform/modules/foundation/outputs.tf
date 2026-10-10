@@ -16,3 +16,15 @@ output "github_actions_workload_identity_provider" {
 output "github_artifact_publisher_service_account_email" {
   value = google_service_account.github_artifact_publisher.email
 }
+
+output "binary_authorization_attestor_name" {
+  value = google_binary_authorization_attestor.release.id
+}
+
+output "binary_authorization_kms_key_version" {
+  value = data.google_kms_crypto_key_version.binary_authorization.name
+}
+
+output "binary_authorization_enforcement_mode" {
+  value = google_binary_authorization_policy.assessment.default_admission_rule[0].enforcement_mode
+}

@@ -286,7 +286,11 @@ Tasks:
 - Briefly test cluster/backend unavailability if multi-cluster routing is implemented.
 - Document recovery objectives, state assumptions, cluster recreation, registry retention, and backup strategy.
 - Review IAM, Workload Identity, secret handling, network exposure, container privileges, and image provenance.
-- Record which Cloud Armor, Binary Authorization, private-cluster, and backup controls are documented-only.
+- Run Binary Authorization in audit-only mode with a KMS-backed attestor, collect
+  admission evidence, and promote to blocking only after both application image
+  digests are attested and verified.
+- Record which private-cluster and additional backup controls remain
+  production recommendations.
 
 Exit criteria:
 
