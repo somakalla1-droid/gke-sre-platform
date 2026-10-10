@@ -168,11 +168,17 @@ resource "google_binary_authorization_policy" "assessment" {
     evaluation_mode  = "REQUIRE_ATTESTATION"
     enforcement_mode = "DRYRUN_AUDIT_LOG_ONLY"
     require_attestations_by = [
-      google_binary_authorization_attestor.release.id,
+      # The provider cannot expand this singleton policy during apply when the
+      # attestor ID is unknown in the saved plan. Its canonical name is
+      # deterministic, while the explicit dependency below preserves order.
+      "projects/${var.project_id}/attestors/gke-release-attestor",
     ]
   }
 
-  depends_on = [google_container_analysis_note_iam_member.attestor_occurrences_viewer]
+  depends_on = [
+    google_binary_authorization_attestor.release,
+    google_container_analysis_note_iam_member.attestor_occurrences_viewer,
+  ]
 }
 
 resource "google_iam_workload_identity_pool" "github_actions" {

@@ -39,6 +39,12 @@ Both cluster roots set the GKE evaluation mode to
 blocks or only logs is controlled by the singleton policy's enforcement mode.
 During this phase it only logs.
 
+The policy uses the attestor's deterministic canonical resource name rather
+than its computed Terraform ID. Google provider 7.46.1 can otherwise produce
+an inconsistent final plan when the attestor and singleton policy are created
+in the same apply. An explicit dependency still guarantees that the attestor
+and its note access exist before Terraform creates the policy.
+
 ## Cost boundary
 
 Binary Authorization for GKE is charged per enabled cluster. Google currently
