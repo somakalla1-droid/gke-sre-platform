@@ -16,6 +16,10 @@ module "cluster" {
   artifact_registry_location   = "us-central1"
   artifact_registry_repository = "gke-apps"
 
+  # Match the primary security posture while the project singleton policy is
+  # still DRYRUN_AUDIT_LOG_ONLY.
+  binary_authorization_evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
+
   # Match the proven primary capacity so both two-replica applications and
   # GKE system add-ons remain schedulable in the secondary region.
   node_count = 3

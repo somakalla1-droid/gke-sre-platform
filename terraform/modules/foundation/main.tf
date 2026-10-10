@@ -1,9 +1,12 @@
 locals {
   services = toset([
     "artifactregistry.googleapis.com", "bigquery.googleapis.com",
+    "binaryauthorization.googleapis.com",
     "clouderrorreporting.googleapis.com", "cloudprofiler.googleapis.com",
     "cloudtrace.googleapis.com",
+    "cloudkms.googleapis.com",
     "compute.googleapis.com", "container.googleapis.com",
+    "containeranalysis.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "iam.googleapis.com", "iamcredentials.googleapis.com",
     "logging.googleapis.com", "monitoring.googleapis.com",
@@ -83,6 +86,93 @@ resource "google_artifact_registry_repository" "apps" {
   repository_id = "gke-apps"
   format        = "DOCKER"
   depends_on    = [google_project_service.required]
+}
+
+resource "google_kms_key_ring" "binary_authorization" {
+  project  = var.project_id
+  name     = "gke-binary-authorization"
+  location = "global"
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_kms_crypto_key" "binary_authorization" {
+  name     = "gke-release-attestor"
+  key_ring = google_kms_key_ring.binary_authorization.id
+  purpose  = "ASYMMETRIC_SIGN"
+
+  version_template {
+    algorithm        = "EC_SIGN_P256_SHA256"
+    protection_level = "SOFTWARE"
+  }
+
+  labels = {
+    purpose = "binary-authorization"
+  }
+}
+
+data "google_kms_crypto_key_version" "binary_authorization" {
+  crypto_key = google_kms_crypto_key.binary_authorization.id
+  version    = 1
+}
+
+resource "google_container_analysis_note" "release_attestor" {
+  project           = var.project_id
+  name              = "gke-release-attestor-note"
+  short_description = "Trusted release attestation note for the GKE assessment applications."
+  long_description  = "Stores image attestations signed after the assessment CI and review gates pass."
+
+  attestation_authority {
+    hint {
+      human_readable_name = "GKE assessment release attestor"
+    }
+  }
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_binary_authorization_attestor" "release" {
+  project     = var.project_id
+  name        = "gke-release-attestor"
+  description = "Verifies KMS-signed attestations for reviewed assessment application images."
+
+  attestation_authority_note {
+    note_reference = google_container_analysis_note.release_attestor.id
+
+    public_keys {
+      comment = "Cloud KMS release-signing key version 1."
+
+      pkix_public_key {
+        public_key_pem      = data.google_kms_crypto_key_version.binary_authorization.public_key[0].pem
+        signature_algorithm = "ECDSA_P256_SHA256"
+      }
+    }
+  }
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_container_analysis_note_iam_member" "attestor_occurrences_viewer" {
+  project = var.project_id
+  note    = google_container_analysis_note.release_attestor.name
+  role    = "roles/containeranalysis.notes.occurrences.viewer"
+  member  = "serviceAccount:${google_binary_authorization_attestor.release.attestation_authority_note[0].delegation_service_account_email}"
+}
+
+resource "google_binary_authorization_policy" "assessment" {
+  project                       = var.project_id
+  description                   = "Audit-only attestation policy for the GKE assessment rollout."
+  global_policy_evaluation_mode = "ENABLE"
+
+  default_admission_rule {
+    evaluation_mode  = "REQUIRE_ATTESTATION"
+    enforcement_mode = "DRYRUN_AUDIT_LOG_ONLY"
+    require_attestations_by = [
+      google_binary_authorization_attestor.release.id,
+    ]
+  }
+
+  depends_on = [google_container_analysis_note_iam_member.attestor_occurrences_viewer]
 }
 
 resource "google_iam_workload_identity_pool" "github_actions" {

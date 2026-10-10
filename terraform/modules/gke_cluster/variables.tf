@@ -81,3 +81,17 @@ variable "disk_size_gb" {
     error_message = "disk_size_gb must be at least 30 GiB for this assessment."
   }
 }
+
+variable "binary_authorization_evaluation_mode" {
+  description = "GKE Binary Authorization evaluation mode. Use the project singleton policy only after it exists."
+  type        = string
+  default     = "DISABLED"
+
+  validation {
+    condition = contains([
+      "DISABLED",
+      "PROJECT_SINGLETON_POLICY_ENFORCE",
+    ], var.binary_authorization_evaluation_mode)
+    error_message = "binary_authorization_evaluation_mode must be DISABLED or PROJECT_SINGLETON_POLICY_ENFORCE."
+  }
+}

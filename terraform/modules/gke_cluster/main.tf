@@ -55,6 +55,10 @@ resource "google_container_cluster" "this" {
   logging_service    = "logging.googleapis.com/kubernetes"
   monitoring_service = "monitoring.googleapis.com/kubernetes"
 
+  binary_authorization {
+    evaluation_mode = var.binary_authorization_evaluation_mode
+  }
+
   # Required for GKE to reconcile Kubernetes Ingress resources into external
   # Application Load Balancers. Kept explicit rather than relying on defaults.
   addons_config {
