@@ -79,3 +79,11 @@ References:
 - [Instrument applications for Cloud Trace](https://cloud.google.com/trace/docs/setup)
 - [Profile Go applications](https://cloud.google.com/profiler/docs/profiling-go)
 - [Format Error Reporting events](https://cloud.google.com/error-reporting/docs/formatting-error-messages)
+
+## Verified evidence
+
+The ordered rollout is complete. The retained evidence includes:
+
+- [Response-service tracing and Error Reporting](evidence/response-service-observability.md).
+- [Primary and secondary distributed tracing](evidence/distributed-tracing.md).
+- [Request, response, CPU, and heap profiles](evidence/cloud-profiler.md).
