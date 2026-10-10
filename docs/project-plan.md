@@ -385,17 +385,18 @@ Do not capture tokens, cookies, private keys, billing identifiers, or unredacted
 - [x] Three repositories created and linked.
 - [x] Two applications implemented, tested, and containerized.
 - [x] Terraform foundation applied and verified with no drift.
-- [ ] Terraform provisions the approved environment.
-- [ ] Two GKE clusters validated.
-- [ ] Both applications run with multiple replicas in both clusters.
-- [ ] External endpoint validated.
-- [ ] Traffic routing and failover behavior demonstrated or explicitly documented.
-- [ ] Cloud Logging and Monitoring validated.
-- [ ] BigQuery log analysis and sample queries delivered.
-- [ ] Grafana dashboard includes the four required panels.
-- [ ] Trace, profiler, and error-reporting status documented.
-- [ ] Security and disaster-recovery design documented.
-- [ ] Real troubleshooting scenario documented.
+- [x] Terraform provisions the approved environment.
+- [x] Two GKE clusters validated.
+- [x] Both applications run with multiple replicas in both clusters.
+- [x] External endpoint validated.
+- [x] Traffic routing and failover behavior demonstrated and documented.
+- [x] Cloud Logging and Monitoring validated.
+- [x] BigQuery log analysis and sample queries delivered.
+- [x] Grafana dashboard includes the four required panels.
+- [x] Trace, profiler, and error-reporting status documented.
+- [x] Disaster-recovery and backup design documented.
+- [ ] Remaining security design documented.
+- [x] Real troubleshooting scenario documented.
 - [ ] Architecture diagram, setup guide, and design rationale complete.
 - [ ] Screenshots and exports sanitized.
 - [ ] Temporary billable resources destroyed after review evidence is collected.

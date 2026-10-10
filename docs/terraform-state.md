@@ -15,6 +15,7 @@ State boundaries:
 | Foundation | `terraform/assessment/foundation` |
 | Primary cluster | `terraform/assessment/primary-cluster` |
 | Secondary cluster | `terraform/assessment/secondary-cluster` |
+| Multi-cluster fleet | `terraform/assessment/multi-cluster` |
 
 This separates lifecycle and blast radius while retaining one secured storage boundary.
 
@@ -57,13 +58,13 @@ gcloud storage ls --recursive gs://gke-sre-assesment-tfstate-150538255871
 
 GCS creates a state object only after Terraform first writes state. An initialized but unapplied root can therefore have no object yet.
 
-The foundation root first wrote remote state on October 7, 2026. Its post-apply state contained 12 managed resources, and a refresh plan reported no drift. The primary-cluster and secondary-cluster state objects will not exist until those roots are applied.
+The foundation root first wrote remote state on October 7, 2026. Its post-apply state contained 12 managed resources, and a refresh plan reported no drift. The foundation, primary-cluster, secondary-cluster, and multi-cluster state objects were all verified in the protected bucket on October 9, 2026.
 
 ## Cluster-state lifecycle
 
 The primary-cluster backend was initialized successfully on October 7, 2026. `terraform state list` returned no resources, which is the expected pre-apply condition. Initialization configures access to the backend but does not create the cluster or manually upload a state snapshot.
 
-Terraform will write the first primary-cluster state snapshot under `terraform/assessment/primary-cluster` during the first successful apply. The same process will later be used for the secondary-cluster prefix. State is written, locked, versioned, and read by Terraform; operators must not manually upload or edit it.
+Terraform wrote each root's state snapshot under its dedicated prefix during the first successful apply. State is written, locked, versioned, and read by Terraform; operators must not manually upload or edit it.
 
 After each cluster apply, verify its state independently:
 
