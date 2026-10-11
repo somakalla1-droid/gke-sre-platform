@@ -1,7 +1,7 @@
 # Assessment Requirements Traceability
 
 **Baseline:** [GKE SRE Open-Book Assessment Requirements](assignment-requirements.md)  
-**Last assessed:** October 10, 2026
+**Last assessed:** October 11, 2026
 
 **Purpose:** Track evidence, planned work, and approved free-tier constraints without treating planned configuration as deployed evidence.
 
@@ -45,7 +45,7 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | Log-based error and latency analysis | Complete | Exported records contain `request_id`, `status_code`, and `latency_ms`; controlled queries returned a 25% sample error rate and p50/p95/p99 values | Use representative traffic for final dashboard screenshots; controlled evidence is not a production baseline. |
 | Cloud Trace, Profiler, and Error Reporting | Complete | Error Reporting group `CIPGhZW4v5DPiQE`; three-span distributed traces in both clusters; trace-correlated logs; live request/response CPU profiles; and a live response heap profile are verified through scoped workload identity | Retain the [response-service](evidence/response-service-observability.md), [distributed-tracing](evidence/distributed-tracing.md), and [Cloud Profiler](evidence/cloud-profiler.md) evidence. |
 | Cross-service request flow | Complete | Application A calls B using Kubernetes internal DNS in both clusters; HTTP 200, request-ID correlation, W3C trace-context propagation, and one three-span distributed trace are verified in each region | Retain the [distributed-tracing evidence](evidence/distributed-tracing.md). |
-| Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403; dedicated keyless publisher and signer identities; KMS-backed Binary Authorization attestations; and immutable digest deployments verified in both clusters with zero admission denials | Review enforced blocking and its rollback separately; private-cluster production rationale must also be documented. |
+| Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403; dedicated keyless publisher and signer identities; and enforced KMS-backed Binary Authorization. Both immutable releases passed fresh admission in both clusters, while a mismatched attestation was blocked before Pod creation | Retain the [Binary Authorization enforcement evidence](evidence/binary-authorization-enforcement.md); private-cluster production rationale must also be documented. |
 | Backups and disaster recovery | Complete | Controlled regional failover and recovery succeeded; all four Terraform states are protected by object versioning and seven-day soft delete; both stateless stacks are reproducible from reviewed code and immutable images | Retain and exercise the [DR and backup runbook](runbooks/disaster-recovery.md); GKE Backup, Cloud SQL PITR, and a secondary GAR repository are documented production controls because no PV or database exists in the assessment. |
 | Troubleshooting scenario | Complete | [Response-service capacity incident](evidence/response-service-capacity-incident.md): initial Helm rollback, event-based diagnosis, Terraform node-capacity correction, numeric distroless identity correction, and successful retry | Retain commands and event evidence for final handoff. |
 | Architecture, setup, design-rationale, and cleanup documentation | In progress | Project plan, state operations, foundation evidence, primary readiness, configuration inventory, multi-cluster failover evidence, HPA scaling evidence, DR runbook, and keyless CI publication evidence | Add architecture diagram, remaining security rationale, and cleanup evidence. |
@@ -61,7 +61,15 @@ These corrections were completed before collecting the current application and l
 
 ## Current delivery gate
 
-The immutable, KMS-attested application digests now pass Binary Authorization audit admission in both clusters and are documented in [Binary Authorization Audit Evidence](evidence/binary-authorization-audit.md). The next security action is a separate review of enforced blocking and its rollback procedure; no enforcement change is implied by the successful audit. The architecture diagram, remaining private-cluster security decision, and final cleanup evidence follow. HTTPS/DNS and Cloud NAT have documented production dispositions and explicit revisit criteria.
+Binary Authorization now blocks noncompliant images. The two approved immutable
+releases passed fresh admission and end-to-end verification in both clusters,
+while a controlled mismatched attestation was rejected before Pod creation.
+The audit and enforcement results are documented in
+[Binary Authorization Audit Evidence](evidence/binary-authorization-audit.md)
+and [Binary Authorization Enforcement Evidence](evidence/binary-authorization-enforcement.md).
+The architecture diagram, remaining private-cluster security decision, and
+final cleanup evidence follow. HTTPS/DNS and Cloud NAT have documented
+production dispositions and explicit revisit criteria.
 
 ## Free-tier handling
 

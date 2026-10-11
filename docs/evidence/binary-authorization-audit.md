@@ -14,7 +14,9 @@ updates succeeded in both regions while Cloud Audit Logs recorded the expected
 policy violations. This proves that policy evaluation is active and that
 `DRYRUN_AUDIT_LOG_ONLY` does not interrupt existing workloads.
 
-Blocking enforcement is not yet enabled.
+Blocking enforcement was not enabled when this audit-phase evidence was
+collected. It was enabled only after the separate review and validation linked
+below.
 
 ## Deployed controls
 
@@ -168,8 +170,9 @@ A secondary cluster-local Service proxy request returned HTTP 200-equivalent
 application JSON from request-info and its local response dependency. Both
 services reported the same corrected commits from `gke-secondary`.
 
-This completes the audit-mode gate. It does not by itself authorize enforcement;
-the enforcement plan and rollback procedure still require separate review.
+This completed the audit-mode gate. The separate enforcement review and live
+verification are recorded in
+[Binary Authorization Enforcement Evidence](binary-authorization-enforcement.md).
 
 ## Enforcement gate
 
@@ -183,4 +186,4 @@ following are complete:
 5. [x] Roll out both attested images to both clusters while still in audit mode.
 6. [x] Confirm that the audit logs no longer report attestor denial for those
    application images.
-7. [ ] Review a separate Terraform enforcement plan and rollback procedure.
+7. [x] Review a separate Terraform enforcement plan and rollback procedure.
