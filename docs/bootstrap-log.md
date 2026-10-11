@@ -46,3 +46,10 @@ The foundation layer now exists in Google Cloud. No GKE cluster, node, applicati
 - Generated local `kubectl` credentials for `gke-primary` and confirmed its single `e2-medium` node is `Ready`.
 - Confirmed all observed GKE system workloads are running with zero restarts.
 - Verified the primary-cluster remote state and a post-apply Terraform refresh plan; no drift was found.
+
+## October 10, 2026
+
+- Applied the dedicated keyless GitHub release-attestor service account and its least-privilege Binary Authorization permissions.
+- Recovered safely from a partial Terraform apply caused by a missing API quota-project override; six resources had succeeded and the remaining attestor IAM binding was applied from a fresh saved plan.
+- Verified the foundation state after recovery; Terraform reported no changes and no drift.
+- Configured the foundation Google provider to send `gke-sre-assesment` as the quota project explicitly for future local Terraform operations.

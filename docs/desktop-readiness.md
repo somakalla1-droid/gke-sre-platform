@@ -22,7 +22,7 @@ This runbook records the workstation and Google Cloud prerequisites for the GKE 
 
 > The project ID intentionally contains the spelling `assesment`. Google Cloud project IDs cannot be renamed after creation.
 
-The local `gcloud` configuration and Application Default Credentials quota project are set to `gke-sre-assesment`.
+The local `gcloud` configuration and Application Default Credentials quota project are set to `gke-sre-assesment`. The foundation Google provider also sets `billing_project` to the managed project and enables `user_project_override`, ensuring client-based Google APIs receive the correct quota project during Terraform operations.
 
 ## Enabled Google Cloud services
 
@@ -99,6 +99,7 @@ These commands are safe to rerun and do not create resources:
 ```bash
 gcloud auth list
 gcloud config get-value project
+gcloud config get-value billing/quota_project
 gcloud projects describe gke-sre-assesment
 gcloud billing projects describe gke-sre-assesment
 gcloud services list --enabled --project=gke-sre-assesment
