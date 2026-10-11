@@ -82,6 +82,18 @@ monitored. That conversion is intentionally deferred because it changes the
 cluster network model and is not required to prove the already verified
 multi-cluster application flow.
 
+## Private Service Access decision
+
+Private Service Access is not deployed because the assessment has no Cloud SQL,
+Memorystore, or other private service-producer endpoint. Creating the peering
+range without a consumer would not validate an application path. If a
+production managed service requires private IP connectivity, reserve a
+non-overlapping producer range, establish the Service Networking connection,
+apply DNS and firewall policy, and test connectivity from private workload
+identities. This is separate from Private Google Access, which provides private
+nodes a path to Google APIs, and from Cloud NAT, which provides controlled
+internet egress.
+
 ## Revisit criteria
 
 Reopen this decision if either of these becomes available:

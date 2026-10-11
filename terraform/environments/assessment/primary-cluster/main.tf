@@ -16,8 +16,8 @@ module "cluster" {
   artifact_registry_location   = "us-central1"
   artifact_registry_repository = "gke-apps"
 
-  # Evaluate the Terraform-managed project singleton policy. The initial
-  # policy uses DRYRUN_AUDIT_LOG_ONLY, so violations are logged, not blocked.
+  # Evaluate the Terraform-managed project singleton policy. The current
+  # project policy requires the KMS-backed attestor and blocks violations.
   binary_authorization_evaluation_mode = "PROJECT_SINGLETON_POLICY_ENFORCE"
 
   # Three nodes leave schedulable capacity for both two-replica assessment

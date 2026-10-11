@@ -387,5 +387,5 @@ Do not capture tokens, cookies, private keys, billing identifiers, or unredacted
 - [x] Remaining security design documented.
 - [x] Real troubleshooting scenario documented.
 - [x] Architecture diagram, setup guide, and design rationale complete.
-- [ ] Screenshots and exports sanitized.
+- [x] Screenshots and exports sanitized.
 - [ ] Temporary billable resources destroyed after review evidence is collected.

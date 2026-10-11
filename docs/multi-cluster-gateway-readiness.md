@@ -1,5 +1,10 @@
 # Multi-Cluster Gateway Readiness
 
+> **Historical checkpoint:** The connectivity issue described below was
+> resolved. The feature is now Ready, both memberships are `OK`, and the
+> Gateway/failover tests passed. See
+> [Multi-Cluster Gateway Evidence](evidence/multi-cluster-gateway.md).
+
 ## Decision
 
 Use a GKE global external **multi-cluster Gateway** for the assessment's single
@@ -27,10 +32,10 @@ Google's recommended API for a new deployment.
 | Cluster health | Three Ready nodes and two ready request replicas in each cluster |
 | gcloud version | `587.0.0`, above the documented fleet-registration minimum |
 
-The multi-cluster Gateway feature is `ACTIVE`, but its per-membership status
-reports `ERROR: Lost connection`. The exported multi-cluster GatewayClasses
-are therefore not available yet, and no Gateway routing resources should be
-created until both membership states become `OK`.
+During the initial readiness review, the multi-cluster Gateway feature was
+`ACTIVE`, but its per-membership status reported `ERROR: Lost connection`.
+Gateway routing resources were correctly held until both membership states
+became `OK`.
 
 ## Ordered implementation
 
