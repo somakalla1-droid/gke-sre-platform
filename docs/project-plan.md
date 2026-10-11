@@ -38,29 +38,14 @@ Use three repositories to reflect realistic team ownership:
 
 The platform repository is the primary assessment entry point and links to both application repositories.
 
-## 3. Target architecture
+## 3. Architecture
 
-```text
-                         Customer
-                            |
-                    Global HTTPS endpoint
-                            |
-               Global load-balancing design
-                     /              \
-             Primary region     Secondary region
-             Zonal GKE cluster  Zonal GKE cluster
-                /       \          /       \
-             App A     App B     App A     App B
-             2+ pods   2+ pods   2+ pods   2+ pods
-                \       /          \       /
-                 Cloud Logging and Monitoring
-                            |
-                    Log Router / Sink
-                            |
-                         BigQuery
-                            |
-                    Grafana dashboards
-```
+The original target has been implemented and reconciled with the verified
+environment. The current traffic, application, supply-chain, security, and
+observability views are maintained in
+[As-Built Architecture and Design Rationale](architecture.md). That document
+also distinguishes the deployed public HTTP assessment endpoint from the
+recommended production HTTPS/DNS design.
 
 ### Proposed locations
 
@@ -85,21 +70,21 @@ Zonal clusters are used to control assessment costs. The production design will 
 - Services, resource requests/limits, probes, PodDisruptionBudgets, and HPAs.
 - Cloud Logging, Cloud Monitoring, BigQuery log analysis, and Grafana dashboard.
 - A reachable application endpoint and documented request flow.
+- Global multi-cluster Gateway routing, Cloud Armor, and regional failover.
+- KMS-backed image attestations and enforced Binary Authorization.
 - Terraform state protection and reproducible deployment/cleanup commands.
 
 ### Demonstrate briefly if credits and quotas allow
 
 - Both clusters running simultaneously.
-- Multi-cluster service discovery or ingress/failover behavior.
 - Removal of one backend/cluster to demonstrate health-based routing.
+- HPA response to bounded load on fixed assessment capacity.
 - Trace propagation across application requests.
 
 ### Document as production recommendations
 
 - Shared VPC and organizational folder hierarchy.
 - Regional GKE clusters.
-- Cloud Armor policies.
-- Binary Authorization and image attestation.
 - Private clusters plus controlled egress.
 - Anthos/Cloud Service Mesh.
 - Cloud SQL HA, Memorystore replication, and other stateful services.
@@ -399,8 +384,8 @@ Do not capture tokens, cookies, private keys, billing identifiers, or unredacted
 - [x] Grafana dashboard includes the four required panels.
 - [x] Trace, profiler, and error-reporting status documented.
 - [x] Disaster-recovery and backup design documented.
-- [ ] Remaining security design documented.
+- [x] Remaining security design documented.
 - [x] Real troubleshooting scenario documented.
-- [ ] Architecture diagram, setup guide, and design rationale complete.
+- [x] Architecture diagram, setup guide, and design rationale complete.
 - [ ] Screenshots and exports sanitized.
 - [ ] Temporary billable resources destroyed after review evidence is collected.

@@ -48,7 +48,7 @@ The intentional assessment choices are two zonal Standard clusters with three `e
 | Security controls | In progress | Non-root distroless images; read-only root filesystem; dropped Linux capabilities; Shielded Nodes; Secure Boot; scoped artifact access; Workload Identity; Secret Manager CSI; attached Cloud Armor SQLi/XSS WAF with verified HTTP 403; dedicated keyless publisher and signer identities; and enforced KMS-backed Binary Authorization. Both immutable releases passed fresh admission in both clusters, while a mismatched attestation was blocked before Pod creation | Retain the [Binary Authorization enforcement evidence](evidence/binary-authorization-enforcement.md); private-cluster production rationale must also be documented. |
 | Backups and disaster recovery | Complete | Controlled regional failover and recovery succeeded; all four Terraform states are protected by object versioning and seven-day soft delete; both stateless stacks are reproducible from reviewed code and immutable images | Retain and exercise the [DR and backup runbook](runbooks/disaster-recovery.md); GKE Backup, Cloud SQL PITR, and a secondary GAR repository are documented production controls because no PV or database exists in the assessment. |
 | Troubleshooting scenario | Complete | [Response-service capacity incident](evidence/response-service-capacity-incident.md): initial Helm rollback, event-based diagnosis, Terraform node-capacity correction, numeric distroless identity correction, and successful retry | Retain commands and event evidence for final handoff. |
-| Architecture, setup, design-rationale, and cleanup documentation | In progress | Project plan, state operations, foundation evidence, primary readiness, configuration inventory, multi-cluster failover evidence, HPA scaling evidence, DR runbook, and keyless CI publication evidence | Add architecture diagram, remaining security rationale, and cleanup evidence. |
+| Architecture, setup, design-rationale, and cleanup documentation | In progress | [As-built architecture and design rationale](architecture.md), project plan, state operations, deployment evidence, configuration inventory, multi-cluster failover evidence, HPA scaling evidence, security runbooks, DR runbook, and keyless CI publication evidence | Perform the final cross-repository audit and retain cleanup evidence. |
 
 ## Completed application-evidence corrections
 
@@ -67,9 +67,9 @@ while a controlled mismatched attestation was rejected before Pod creation.
 The audit and enforcement results are documented in
 [Binary Authorization Audit Evidence](evidence/binary-authorization-audit.md)
 and [Binary Authorization Enforcement Evidence](evidence/binary-authorization-enforcement.md).
-The architecture diagram, remaining private-cluster security decision, and
-final cleanup evidence follow. HTTPS/DNS and Cloud NAT have documented
-production dispositions and explicit revisit criteria.
+The as-built architecture and production deltas are documented. The final
+cross-repository audit and cleanup evidence follow. HTTPS/DNS and Cloud NAT
+have documented production dispositions and explicit revisit criteria.
 
 ## Free-tier handling
 
