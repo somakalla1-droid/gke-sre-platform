@@ -175,7 +175,8 @@ After the audit phase succeeds:
 3. Redeploy both attested images while the policy remains dry-run.
 4. Confirm audit decisions recognize the valid attestations.
 5. Change `enforcement_mode` to `ENFORCED_BLOCK_AND_AUDIT_LOG` through a
-   separate reviewed PR and Terraform plan.
+   separate reviewed PR and Terraform plan, following the
+   [enforcement runbook](runbooks/binary-authorization-enforcement.md).
 6. Prove an attested image succeeds and a harmless unsigned test image is
    rejected.
 
@@ -202,6 +203,7 @@ set the affected cluster module variable back to `DISABLED`, review the plan,
 and apply that cluster root. Do not delete the attestor, note, or KMS key while
 investigating; retaining them preserves the audit trail.
 
-If a future enforced policy blocks an emergency deployment, use the documented
-Binary Authorization break-glass process with incident approval and retain its
-audit log. Do not weaken the project policy silently.
+If an enforced policy blocks an emergency deployment, follow the standard
+policy rollback or the explicitly approved break-glass procedure in the
+[enforcement runbook](runbooks/binary-authorization-enforcement.md). Do not
+weaken the project policy silently.

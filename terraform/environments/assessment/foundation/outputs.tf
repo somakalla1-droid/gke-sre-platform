@@ -44,6 +44,6 @@ output "binary_authorization_kms_key_version" {
 }
 
 output "binary_authorization_enforcement_mode" {
-  description = "Current Binary Authorization policy mode; audit rollout must remain DRYRUN_AUDIT_LOG_ONLY."
+  description = "Current Binary Authorization policy enforcement mode."
   value       = module.foundation.binary_authorization_enforcement_mode
 }
