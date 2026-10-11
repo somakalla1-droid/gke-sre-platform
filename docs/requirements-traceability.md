@@ -19,6 +19,12 @@ The solution remains aligned with the assignment. The foundation, two regional G
 
 The intentional assessment choices are two zonal Standard clusters with three `e2-medium` nodes each and a shared primary-region Artifact Registry repository. Three nodes per cluster were required to schedule the GKE system workloads and both two-replica applications with their declared resources and disruption budgets. These choices must be clearly distinguished from the regional-cluster and private-networking recommendations in the final production handoff.
 
+Recurring-cost decisions, low-cost prerequisite constraints, implemented
+substitutes, and production revisit criteria are separated explicitly in
+[Cost-Constrained Requirements and Production Disposition](cost-constrained-requirements.md).
+That document does not represent deferred controls as deployed or technically
+unavailable.
+
 ## Requirement matrix
 
 | Requirement | Status | Current evidence | Remaining work or rationale |
@@ -82,3 +88,6 @@ The supplied assignment explicitly permits skipping unavailable free-tier featur
 1. The reason it could not be implemented in this environment.
 2. The intended production service and configuration.
 3. Evidence that the closest feasible assessment alternative was tested.
+
+The project-specific decisions satisfying this rule are recorded in
+[Cost-Constrained Requirements and Production Disposition](cost-constrained-requirements.md).

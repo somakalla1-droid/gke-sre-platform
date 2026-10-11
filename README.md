@@ -6,6 +6,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 - [Original assignment requirements](docs/assignment-requirements.md)
 - [Requirements traceability](docs/requirements-traceability.md)
+- [Cost-constrained requirements and production disposition](docs/cost-constrained-requirements.md)
 - [Desktop and cloud readiness](docs/desktop-readiness.md)
 - [Assessment project plan](docs/project-plan.md)
 - [As-built architecture and design rationale](docs/architecture.md)
