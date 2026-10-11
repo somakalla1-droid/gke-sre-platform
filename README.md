@@ -8,6 +8,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Requirements traceability](docs/requirements-traceability.md)
 - [Desktop and cloud readiness](docs/desktop-readiness.md)
 - [Assessment project plan](docs/project-plan.md)
+- [As-built architecture and design rationale](docs/architecture.md)
 - [Configuration inventory](docs/configuration-inventory.md)
 - [Bootstrap log](docs/bootstrap-log.md)
 - [Terraform state operations](docs/terraform-state.md)
@@ -48,4 +49,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, keyless GitHub Actions image publishing and attestation, enforced Binary Authorization, BigQuery log analysis, and the Grafana dashboard are complete. Both applications export trace-correlated structured logs through keyless workload identity, and verified three-span distributed traces cover the complete Application A-to-B request path in both regions. Error Reporting and live CPU/heap profiling are also verified. The DR runbook records recovery objectives, state protection, rebuild order, and honest production backup recommendations. HTTPS/DNS and Cloud NAT have documented production dispositions. The remaining controlled stages are the architecture and final cleanup evidence.
+Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, keyless GitHub Actions image publishing and attestation, enforced Binary Authorization, BigQuery log analysis, the Grafana dashboard, and the as-built architecture are complete. Both applications export trace-correlated structured logs through keyless workload identity, and verified three-span distributed traces cover the complete Application A-to-B request path in both regions. Error Reporting and live CPU/heap profiling are also verified. The DR runbook records recovery objectives, state protection, rebuild order, and honest production backup recommendations. HTTPS/DNS and Cloud NAT have documented production dispositions. The remaining controlled stage is final audit and cleanup evidence.
