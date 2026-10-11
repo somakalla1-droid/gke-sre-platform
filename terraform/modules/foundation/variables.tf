@@ -2,6 +2,20 @@ variable "project_id" { type = string }
 variable "primary_region" { type = string }
 variable "secondary_region" { type = string }
 
+variable "binary_authorization_enforcement_mode" {
+  description = "Action taken when an image fails the Binary Authorization attestation rule."
+  type        = string
+  default     = "DRYRUN_AUDIT_LOG_ONLY"
+
+  validation {
+    condition = contains([
+      "DRYRUN_AUDIT_LOG_ONLY",
+      "ENFORCED_BLOCK_AND_AUDIT_LOG",
+    ], var.binary_authorization_enforcement_mode)
+    error_message = "binary_authorization_enforcement_mode must be DRYRUN_AUDIT_LOG_ONLY or ENFORCED_BLOCK_AND_AUDIT_LOG."
+  }
+}
+
 variable "application_namespace" {
   description = "Namespace that contains assessment application workloads."
   type        = string

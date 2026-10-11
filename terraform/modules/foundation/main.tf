@@ -161,12 +161,12 @@ resource "google_container_analysis_note_iam_member" "attestor_occurrences_viewe
 
 resource "google_binary_authorization_policy" "assessment" {
   project                       = var.project_id
-  description                   = "Audit-only attestation policy for the GKE assessment rollout."
+  description                   = "KMS-backed release-attestation policy for the GKE assessment."
   global_policy_evaluation_mode = "ENABLE"
 
   default_admission_rule {
     evaluation_mode  = "REQUIRE_ATTESTATION"
-    enforcement_mode = "DRYRUN_AUDIT_LOG_ONLY"
+    enforcement_mode = var.binary_authorization_enforcement_mode
     require_attestations_by = [
       # The provider cannot expand this singleton policy during apply when the
       # attestor ID is unknown in the saved plan. Its canonical name is
