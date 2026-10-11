@@ -7,6 +7,8 @@ spec:
   parentRefs:
     - name: request-info-global
       sectionName: http
+    - name: request-info-global
+      sectionName: https
   rules:
     - matches:
         - path:

@@ -327,6 +327,28 @@ resource "google_compute_security_policy" "assessment_web_waf" {
   depends_on = [google_project_service.required]
 }
 
+resource "google_compute_global_address" "assessment_gateway" {
+  project      = var.project_id
+  name         = "gke-sre-assessment-gateway-ip"
+  description  = "Stable public IPv4 address for the assessment multi-cluster Gateway."
+  address_type = "EXTERNAL"
+  ip_version   = "IPV4"
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_compute_managed_ssl_certificate" "assessment_gateway" {
+  project     = var.project_id
+  name        = "gke-sre-assessment-gateway-cert"
+  description = "Browser-trusted certificate for the assessment multi-cluster Gateway."
+
+  managed {
+    domains = [var.gateway_hostname]
+  }
+
+  depends_on = [google_project_service.required]
+}
+
 resource "google_bigquery_dataset" "assessment_app_logs" {
   project                     = var.project_id
   dataset_id                  = var.application_logs_dataset_id
