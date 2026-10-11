@@ -74,3 +74,20 @@ variable "github_publisher_repositories" {
     error_message = "Every publisher repository must belong to github_repository_owner."
   }
 }
+
+variable "github_attestor_repositories" {
+  description = "Full GitHub repository names permitted to impersonate the Binary Authorization release signer."
+  type        = set(string)
+  default = [
+    "somakalla1-droid/gke-request-info-service",
+    "somakalla1-droid/gke-response-service",
+  ]
+
+  validation {
+    condition = alltrue([
+      for repository in var.github_attestor_repositories :
+      startswith(repository, "${var.github_repository_owner}/")
+    ])
+    error_message = "Every attestor repository must belong to github_repository_owner."
+  }
+}

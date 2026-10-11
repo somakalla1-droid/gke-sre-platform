@@ -17,6 +17,10 @@ output "github_artifact_publisher_service_account_email" {
   value = google_service_account.github_artifact_publisher.email
 }
 
+output "github_release_attestor_service_account_email" {
+  value = google_service_account.github_release_attestor.email
+}
+
 output "binary_authorization_attestor_name" {
   value = google_binary_authorization_attestor.release.id
 }

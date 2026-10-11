@@ -166,8 +166,10 @@ The completed two-cluster test is recorded in
 
 After the audit phase succeeds:
 
-1. Grant signing permissions to a dedicated release identity, not a human
-   owner and not the GKE node service account.
+1. Grant signing permissions to the dedicated `github-release-attestor`
+   service account, not a human owner, image publisher, or GKE node service
+   account. GitHub repositories impersonate it through the existing OIDC pool
+   only from `main`.
 2. Create and validate attestations for the exact request and response image
    digests.
 3. Redeploy both attested images while the policy remains dry-run.
@@ -180,6 +182,18 @@ After the audit phase succeeds:
 The approved image digests are recorded in
 [Distributed Tracing Evidence](evidence/distributed-tracing.md). Tags alone are
 not sufficient because Binary Authorization evaluates immutable digests.
+
+The release signer receives only these permissions:
+
+- `roles/cloudkms.signerVerifier` on the release CryptoKey;
+- `roles/containeranalysis.notes.attacher` on the attestor note;
+- `roles/containeranalysis.occurrences.editor` on the attestation project; and
+- `roles/binaryauthorization.attestorsVerifier` on the release attestor.
+
+It does not receive Artifact Registry write access, policy administration,
+cluster administration, or service-account key creation. The existing
+`github-artifact-publisher` identity remains independently responsible for
+publishing images.
 
 ## Rollback
 

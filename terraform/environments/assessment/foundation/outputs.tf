@@ -28,6 +28,11 @@ output "github_artifact_publisher_service_account_email" {
   value       = module.foundation.github_artifact_publisher_service_account_email
 }
 
+output "github_release_attestor_service_account_email" {
+  description = "Keyless GitHub Actions service account scoped to signing and recording release attestations."
+  value       = module.foundation.github_release_attestor_service_account_email
+}
+
 output "binary_authorization_attestor_name" {
   description = "Full Binary Authorization attestor resource name required by the project policy."
   value       = module.foundation.binary_authorization_attestor_name
