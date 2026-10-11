@@ -237,6 +237,49 @@ resource "google_service_account_iam_member" "github_artifact_publisher" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_actions.name}/attribute.repository/${each.value}"
 }
 
+resource "google_service_account" "github_release_attestor" {
+  project      = var.project_id
+  account_id   = "github-release-attestor"
+  display_name = "GitHub Binary Authorization release attestor"
+  description  = "Keyless GitHub Actions identity limited to signing and recording release attestations."
+
+  depends_on = [google_project_service.required]
+}
+
+resource "google_service_account_iam_member" "github_release_attestor" {
+  for_each = var.github_attestor_repositories
+
+  service_account_id = google_service_account.github_release_attestor.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_actions.name}/attribute.repository/${each.value}"
+}
+
+resource "google_kms_crypto_key_iam_member" "github_release_attestor" {
+  crypto_key_id = google_kms_crypto_key.binary_authorization.id
+  role          = "roles/cloudkms.signerVerifier"
+  member        = "serviceAccount:${google_service_account.github_release_attestor.email}"
+}
+
+resource "google_container_analysis_note_iam_member" "github_release_attestor" {
+  project = var.project_id
+  note    = google_container_analysis_note.release_attestor.name
+  role    = "roles/containeranalysis.notes.attacher"
+  member  = "serviceAccount:${google_service_account.github_release_attestor.email}"
+}
+
+resource "google_project_iam_member" "github_release_attestor_occurrences_editor" {
+  project = var.project_id
+  role    = "roles/containeranalysis.occurrences.editor"
+  member  = "serviceAccount:${google_service_account.github_release_attestor.email}"
+}
+
+resource "google_binary_authorization_attestor_iam_member" "github_release_attestor" {
+  project  = var.project_id
+  attestor = google_binary_authorization_attestor.release.name
+  role     = "roles/binaryauthorization.attestorsVerifier"
+  member   = "serviceAccount:${google_service_account.github_release_attestor.email}"
+}
+
 resource "google_compute_security_policy" "assessment_web_waf" {
   project     = var.project_id
   name        = "gke-assessment-web-waf"
