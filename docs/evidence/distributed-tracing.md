@@ -113,8 +113,9 @@ gcloud logging read \
 The corresponding trace can be inspected in Cloud Trace using the ID at the
 end of the returned `trace` field.
 
-## Remaining observability evidence
+## Observability completion
 
-Distributed trace propagation is complete in both regions. The remaining item
-for the combined Cloud Trace, Profiler, and Error Reporting requirement is a
-retained live Cloud Profiler sample.
+Distributed trace propagation is complete in both regions. Live request and
+response CPU profiles plus a response heap profile were subsequently retained
+in [Cloud Profiler Evidence](cloud-profiler.md), completing the combined Cloud
+Trace, Profiler, and Error Reporting requirement.

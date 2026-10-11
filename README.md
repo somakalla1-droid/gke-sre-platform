@@ -9,6 +9,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Desktop and cloud readiness](docs/desktop-readiness.md)
 - [Assessment project plan](docs/project-plan.md)
 - [As-built architecture and design rationale](docs/architecture.md)
+- [End-to-end setup guide](docs/setup-guide.md)
 - [Configuration inventory](docs/configuration-inventory.md)
 - [Bootstrap log](docs/bootstrap-log.md)
 - [Terraform state operations](docs/terraform-state.md)
@@ -23,6 +24,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Multi-cluster Gateway readiness](docs/multi-cluster-gateway-readiness.md)
 - [Multi-cluster Gateway and failover evidence](docs/evidence/multi-cluster-gateway.md)
 - [Disaster recovery and backup runbook](docs/runbooks/disaster-recovery.md)
+- [Assessment cleanup runbook](docs/runbooks/cleanup.md)
 - [HPA scaling evidence](docs/evidence/hpa-scaling.md)
 - [GitHub Actions keyless image publishing](docs/github-actions-cicd.md)
 - [GitHub Actions image-publishing evidence](docs/evidence/github-actions-image-publishing.md)
@@ -34,6 +36,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [Binary Authorization audit-first rollout](docs/binary-authorization.md)
 - [Binary Authorization audit evidence](docs/evidence/binary-authorization-audit.md)
 - [Binary Authorization enforcement evidence](docs/evidence/binary-authorization-enforcement.md)
+- [Final assessment audit](docs/evidence/final-audit.md)
 - [BigQuery application-log export](docs/observability-bigquery.md)
 - [BigQuery log-export evidence](docs/evidence/bigquery-log-export.md)
 - [Grafana Cloud data-source setup](docs/grafana-cloud.md)
@@ -49,4 +52,4 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 ## Current phase
 
-Desktop readiness, repository setup, the Terraform foundation, two regional GKE clusters, Secret Manager integration, both applications in both clusters, global multi-cluster routing and failover, Cloud Armor, HPA scaling evidence, keyless GitHub Actions image publishing and attestation, enforced Binary Authorization, BigQuery log analysis, the Grafana dashboard, and the as-built architecture are complete. Both applications export trace-correlated structured logs through keyless workload identity, and verified three-span distributed traces cover the complete Application A-to-B request path in both regions. Error Reporting and live CPU/heap profiling are also verified. The DR runbook records recovery objectives, state protection, rebuild order, and honest production backup recommendations. HTTPS/DNS and Cloud NAT have documented production dispositions. The remaining controlled stage is final audit and cleanup evidence.
+All functional assessment deliverables and the final non-destructive audit are complete. Both applications run as attested immutable digests in both clusters; global routing, failover, Cloud Armor, autoscaling, logs, BigQuery, Grafana, traces, errors, profiles, Secret Manager, and enforced Binary Authorization have verified evidence. The as-built architecture, setup guide, DR design, troubleshooting case, production deltas, and dependency-ordered cleanup procedure are documented. Destructive cleanup remains intentionally pending until the reviewer confirms evidence retention.

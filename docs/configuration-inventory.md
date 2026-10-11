@@ -1,7 +1,7 @@
 # Configuration Inventory
 
-**Collected:** October 3, 2026  
-**Purpose:** Record verified configuration and outstanding decisions for the GKE SRE assessment without committing credentials or sensitive billing data.
+**Collected:** October 11, 2026
+**Purpose:** Record the deployed configuration and outstanding production decisions for the GKE SRE assessment without committing credentials or sensitive billing data.
 
 ## Status legend
 
@@ -21,9 +21,9 @@
 | Budget | `$25 USD` monthly | Verified |
 | Alert thresholds | 25%, 50%, 75%, and 100% | Verified |
 | Primary region | `us-central1` | Verified deployment |
-| Default zone | `us-central1-a` | Proposed |
+| Default zone | `us-central1-a` | Verified deployment |
 | Secondary region | `us-east1` | Verified deployment |
-| Secondary zone | `us-east1-b` | Proposed |
+| Secondary zone | `us-east1-b` | Verified deployment |
 
 The authenticated GCP account and billing account identifier are intentionally not stored in this repository. They can be verified locally with:
 
@@ -32,21 +32,30 @@ gcloud auth list
 gcloud billing projects describe gke-sre-assesment
 ```
 
-### Verified enabled APIs
+### Representative verified enabled APIs
 
 - `artifactregistry.googleapis.com`
 - `bigquery.googleapis.com`
+- `binaryauthorization.googleapis.com`
 - `billingbudgets.googleapis.com`
+- `cloudkms.googleapis.com`
 - `cloudprofiler.googleapis.com`
 - `cloudresourcemanager.googleapis.com`
 - `cloudtrace.googleapis.com`
+- `connectgateway.googleapis.com`
+- `containeranalysis.googleapis.com`
 - `compute.googleapis.com`
 - `container.googleapis.com`
+- `gkehub.googleapis.com`
 - `iam.googleapis.com`
 - `iamcredentials.googleapis.com`
 - `logging.googleapis.com`
 - `monitoring.googleapis.com`
+- `multiclusteringress.googleapis.com`
+- `multiclusterservicediscovery.googleapis.com`
+- `secretmanager.googleapis.com`
 - `serviceusage.googleapis.com`
+- `sts.googleapis.com`
 
 ### Cloud resource configuration
 
@@ -60,16 +69,24 @@ gcloud billing projects describe gke-sre-assesment
 | Secondary subnet | `gke-secondary-subnet`, `us-east1`, `10.40.0.0/20` | Verified |
 | Secondary pod range | `secondary-pods`, `10.50.0.0/16` | Verified |
 | Secondary service range | `secondary-services`, `10.60.0.0/20` | Verified |
-| Primary cluster | `gke-primary`, `us-central1-a`, one `e2-medium` node | Verified deployment |
-| Secondary cluster | `gke-secondary`, `us-east1-b`, one `e2-medium` node | Configured; not applied |
+| Primary cluster | `gke-primary`, `us-central1-a`, three `e2-medium` nodes | Verified deployment |
+| Secondary cluster | `gke-secondary`, `us-east1-b`, three `e2-medium` nodes | Verified deployment |
 | Artifact Registry repository | `gke-apps`, Docker, `us-central1` | Verified |
 | Terraform state bucket | `gke-sre-assesment-tfstate-150538255871` | Verified |
-| BigQuery dataset | `gke_observability` | Proposed |
-| Log sink | `gke-bigquery-sink` | Proposed |
+| BigQuery dataset | `assessment_app_logs`, US, 30-day table retention | Verified deployment |
+| Log sink | `assessment-app-request-logs-to-bigquery` | Verified deployment |
+| Fleet | Default fleet with both cluster memberships healthy | Verified deployment |
+| Global Gateway | `request-info-global`, `136.81.84.189`, HTTP | Verified deployment |
+| Cloud Armor | `gke-assessment-web-waf`, SQLi/XSS deny rules | Verified deployment |
+| Binary Authorization | `REQUIRE_ATTESTATION`, `ENFORCED_BLOCK_AND_AUDIT_LOG` | Verified deployment |
+| Secret Manager | `gke-sre-response-demo-token` with workload-scoped access | Verified deployment |
 
 The state bucket uses uniform bucket-level access, enforced public-access prevention, object versioning, and GCP soft-delete protection. Each Terraform root uses a distinct object prefix.
 
-IP ranges, node/compute class, cluster release channel, and exact resource limits will be selected during Terraform design after checking quota and cost implications.
+Both clusters use the regular release channel, VPC-native alias ranges,
+Shielded Nodes with Secure Boot, GKE Workload Identity, the Secret Manager
+add-on, and the Gateway API standard channel. Application resource requests,
+limits, probes, disruption budgets, and HPA bounds are owned by the Helm charts.
 
 ## GitHub account
 
@@ -148,13 +165,13 @@ Expected contents mirror Application A but retain an independent build, image, v
 
 Use keyless GitHub Actions authentication through Google Cloud Workload Identity Federation.
 
-| Component | Proposed configuration | Status |
+| Component | Deployed configuration | Status |
 | --- | --- | --- |
-| Workload Identity Pool | Dedicated GitHub Actions pool | Pending |
-| Identity Provider | GitHub OIDC provider restricted by repository | Pending |
-| Platform deployer service account | Terraform plan/apply permissions | Pending |
-| App A publisher service account | Artifact Registry write for App A | Pending |
-| App B publisher service account | Artifact Registry write for App B | Pending |
+| Workload Identity Pool | `github-actions` | Verified deployment |
+| Identity Provider | GitHub OIDC, owner ID and `refs/heads/main` restricted | Verified deployment |
+| Platform deployer identity | Local authenticated operator after PR and saved-plan review | Intentional manual control |
+| Application publisher | `github-artifact-publisher`, repository-scoped GAR writer | Verified deployment |
+| Release signer | `github-release-attestor`, KMS/attestation permissions without GAR write | Verified deployment |
 | Static service-account keys | Prohibited | Policy decision |
 
 Production deployment approval should be separate from image build/publish permissions. For the assessment, infrastructure deployment remains manually approved.
@@ -183,11 +200,19 @@ See [Desktop and Google Cloud Readiness](desktop-readiness.md) for versions and 
 3. Each application repository owns its application source, Dockerfile, Helm chart, and CI lifecycle.
 4. The platform repository owns shared cloud infrastructure, cluster lifecycle, observability, and assessment documentation.
 
-## Foundation deployment status
+## Deployment status
 
-The foundation root was applied on October 7, 2026. The reviewed plan and apply both reported 12 additions, no changes, and no destructions. A post-apply refresh plan reported `No changes`, confirming that the deployed resources match the Terraform configuration. See [Foundation deployment evidence](evidence/foundation-deployment.md).
+All four Terraform roots have protected remote state and deployed resources:
 
-The primary-cluster backend is initialized at `terraform/assessment/primary-cluster`, but its state is empty because the cluster has not been applied. See [Primary cluster readiness](primary-cluster-readiness.md).
+- `foundation` — VPC, subnets, APIs, GAR, IAM, observability, Cloud Armor,
+  Secret Manager, GitHub federation, KMS, attestations, and Binary Authorization;
+- `primary-cluster` — `gke-primary` and its three-node pool;
+- `secondary-cluster` — `gke-secondary` and its three-node pool; and
+- `multi-cluster` — fleet memberships and multi-cluster service/Gateway
+  features.
+
+On October 11, 2026, refresh plans for all four roots returned `No changes`.
+See the deployment evidence and [Final Assessment Audit](evidence/final-audit.md).
 
 ## Verification commands
 

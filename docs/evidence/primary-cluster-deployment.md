@@ -56,6 +56,10 @@ No changes. Your infrastructure matches the configuration.
 
 The node has an external IP because this assessment uses a public-node, non-private GKE configuration to avoid a Cloud NAT dependency during the initial hands-on phase. This is an intentional cost and accessibility trade-off, not the recommended production network posture. Private nodes, controlled egress, and control-plane access restrictions remain production recommendations.
 
-## Not yet deployed
+## Scope boundary when collected
 
-This evidence does not yet demonstrate application workloads, an external application endpoint, the secondary cluster, BigQuery, Grafana, or multi-cluster routing. Those are separate assessment phases.
+At the time of this first cluster apply, application workloads, an external
+endpoint, the secondary cluster, BigQuery, Grafana, and multi-cluster routing
+had not yet been deployed. They were subsequently completed. The original
+one-node pool was also expanded to three nodes after the documented capacity
+incident. See [Final Assessment Audit](final-audit.md) for current state.

@@ -3,11 +3,17 @@
 **Prepared:** October 7, 2026  
 **Terraform root:** `terraform/environments/assessment/primary-cluster`  
 **State prefix:** `terraform/assessment/primary-cluster`  
-**Deployment status:** Plan reviewed; not applied
+**Historical checkpoint:** Initial one-node plan reviewed before the first
+apply. The cluster is now deployed with three Ready nodes; see
+[Primary Cluster Deployment Evidence](evidence/primary-cluster-deployment.md),
+[Response-Service Capacity Incident](evidence/response-service-capacity-incident.md),
+and [Final Assessment Audit](evidence/final-audit.md).
 
 ## Purpose
 
-The primary cluster is the first billable runtime layer. It will be created and validated before application images are published or before the secondary cluster is created. This order confines troubleshooting to one cluster and avoids duplicating compute cost while the deployment process is still being proven.
+This document preserves the initial readiness review that preceded the first
+cluster apply. It explains the original cost-controlled one-node decision and
+the validation gate. It is not the current configuration inventory.
 
 ## Planned cluster
 

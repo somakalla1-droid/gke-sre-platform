@@ -66,10 +66,10 @@ requirements.
 
 The recovery versions deployed in both clusters are:
 
-| Application | Immutable tag | Digest |
+| Application | Commit/version | Digest |
 | --- | --- | --- |
-| Request info | `03ea1316292d2c605b73b67d0eb28f31d775d0ee` | `sha256:45d638bf0d373c90691e3733ab1e22ab7ebac1facefec8220766c990743ba457` |
-| Response | `7aa78243c6cb864d7decfe80646ded3f0641c7fe` | `sha256:ab5fc6d7e62fd50dccc91f2b12008d9ac1d287d7def775883980dc0fe6f0abd6` |
+| Request info | `790b3256a60e95c20b8d17317dca4214744b5b13` | `sha256:83b4a862364d00797d1207e7a01d5fadd5067f0474688c3247e9dab3a5e15382` |
+| Response | `08eb1da1ef88bbed3ea1a02e2fc56be677eab995` | `sha256:3a2343ed94bae7e610d912b293011f432ec68b42db1b08150a9e00dcfcfe6306` |
 
 The image repository is regional in `us-central1`. Git commit SHAs and the
 keyless CI workflows provide a rebuild path if that repository is unavailable.
@@ -207,9 +207,11 @@ terraform -chdir=terraform/environments/assessment/<root> plan -out=recovery.tfp
 terraform -chdir=terraform/environments/assessment/<root> apply recovery.tfplan
 ```
 
-For application restoration, pin the immutable tags in the inventory above,
-deploy response before request-info, and use explicit `--kube-context`. Verify
-the rendered Secret Manager resource name before applying the response chart.
+For application restoration, pin the immutable digests in the inventory above,
+retain the commit as the application version, deploy response before
+request-info, and use explicit `--kube-context`. Verify the rendered Secret
+Manager resource name before applying the response chart. Binary Authorization
+will reject a recovery digest without a valid release attestation.
 
 ## Terraform state recovery
 
