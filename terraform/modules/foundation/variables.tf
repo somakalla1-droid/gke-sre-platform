@@ -2,6 +2,12 @@ variable "project_id" { type = string }
 variable "primary_region" { type = string }
 variable "secondary_region" { type = string }
 
+variable "gateway_hostname" {
+  description = "Public DNS hostname served by the multi-cluster Gateway."
+  type        = string
+  default     = "gke-sre-assessment.duckdns.org"
+}
+
 variable "binary_authorization_enforcement_mode" {
   description = "Action taken when an image fails the Binary Authorization attestation rule."
   type        = string

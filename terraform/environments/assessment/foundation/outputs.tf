@@ -18,6 +18,26 @@ output "cloud_armor_policy_name" {
   value       = module.foundation.cloud_armor_policy_name
 }
 
+output "gateway_hostname" {
+  description = "Public DNS hostname served by the multi-cluster Gateway."
+  value       = module.foundation.gateway_hostname
+}
+
+output "gateway_static_ip_address" {
+  description = "Stable global IPv4 address that DuckDNS must resolve to."
+  value       = module.foundation.gateway_static_ip_address
+}
+
+output "gateway_static_ip_name" {
+  description = "Named global address referenced by the Gateway."
+  value       = module.foundation.gateway_static_ip_name
+}
+
+output "gateway_managed_certificate_name" {
+  description = "Google-managed SSL certificate attached to the Gateway HTTPS listener."
+  value       = module.foundation.gateway_managed_certificate_name
+}
+
 output "github_actions_workload_identity_provider" {
   description = "Full provider resource name used by google-github-actions/auth."
   value       = module.foundation.github_actions_workload_identity_provider
