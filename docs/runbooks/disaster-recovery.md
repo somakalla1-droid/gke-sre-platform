@@ -109,7 +109,7 @@ kubectl \
 
 curl -i \
   -H 'X-Request-ID: dr-triage-001' \
-  http://136.81.84.189/
+  https://gke-sre-assessment.duckdns.org/
 ```
 
 Classify the incident before following a procedure:

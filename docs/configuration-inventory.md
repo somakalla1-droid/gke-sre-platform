@@ -76,7 +76,8 @@ gcloud billing projects describe gke-sre-assesment
 | BigQuery dataset | `assessment_app_logs`, US, 30-day table retention | Verified deployment |
 | Log sink | `assessment-app-request-logs-to-bigquery` | Verified deployment |
 | Fleet | Default fleet with both cluster memberships healthy | Verified deployment |
-| Global Gateway | `request-info-global`, `136.81.84.189`, HTTP | Verified deployment |
+| Global Gateway | `request-info-global`, `8.232.146.143`, HTTPS 443 and HTTP 80 | Verified deployment |
+| Public DNS and TLS | `gke-sre-assessment.duckdns.org`; Google-managed certificate `gke-sre-assessment-gateway-cert`, `ACTIVE` | Verified deployment |
 | Cloud Armor | `gke-assessment-web-waf`, SQLi/XSS deny rules | Verified deployment |
 | Binary Authorization | `REQUIRE_ATTESTATION`, `ENFORCED_BLOCK_AND_AUDIT_LOG` | Verified deployment |
 | Secret Manager | `gke-sre-response-demo-token` with workload-scoped access | Verified deployment |

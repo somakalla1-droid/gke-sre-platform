@@ -58,8 +58,13 @@ Read-only `terraform plan -detailed-exitcode` checks returned exit code 0 and
 - `gke-primary`: three Ready nodes.
 - `gke-secondary`: three Ready nodes.
 - Both applications: `2/2` available in both clusters.
-- Gateway `request-info-global`: programmed at `136.81.84.189`.
+- Gateway `request-info-global`: programmed and healthy at Terraform-owned
+  global address `8.232.146.143`.
 - HTTPRoute `request-info-global`: present in the primary config cluster.
+- DuckDNS `gke-sre-assessment.duckdns.org`: resolves to `8.232.146.143`.
+- Google-managed certificate and domain authorization: `ACTIVE`.
+- Trusted HTTPS application request: HTTP 200; HTTPS Cloud Armor SQLi
+  regression: HTTP 403.
 
 Request `final-audit-001` returned HTTP 200-equivalent JSON through the global
 Gateway. It identified request-info version
@@ -97,9 +102,10 @@ same propagated request ID.
 | Security, DR, and production-gap documentation | Complete |
 | Final billable-resource cleanup | Pending owner approval after evidence review |
 
-HTTPS/DNS, private nodes with Cloud NAT, regional clusters, stateful-data HA,
-and service mesh remain explicitly documented production recommendations. They
-are not represented as deployed controls.
+An organization-owned domain with Cloud DNS, private nodes with Cloud NAT,
+regional clusters, stateful-data HA, and service mesh remain explicitly
+documented production recommendations. Trusted HTTPS using DuckDNS and a
+Google-managed certificate is deployed and verified.
 
 ## Remaining gate
 
@@ -109,4 +115,3 @@ are not represented as deployed controls.
 4. Obtain explicit approval for destructive cleanup.
 5. Execute the [Assessment Cleanup Runbook](../runbooks/cleanup.md) and retain a
    final residue/cost report.
-
