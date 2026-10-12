@@ -4,7 +4,8 @@
 **Project:** `gke-sre-assesment`  
 **Config cluster:** `gke-primary` (`us-central1-a`)  
 **Secondary cluster:** `gke-secondary` (`us-east1-b`)  
-**Gateway address:** `136.81.84.189`
+**Gateway address at this test:** `136.81.84.189` (historical controller-owned
+address; the current Terraform-owned HTTPS address is `8.232.146.143`)
 
 ## Deployed control plane
 
@@ -123,11 +124,10 @@ health again showed two healthy endpoints in each region. Request
 `multi-cluster-recovery-001` returned HTTP 200 from the primary request and
 response services.
 
-## Safety and remaining work
+## Subsequent HTTPS completion
 
-The previous single-cluster Ingress at `136.81.197.123` remains available as a
-rollback endpoint. The new Gateway is HTTP-only. DNS ownership, a certificate,
-and HTTPS edge termination were not deployed because the assessment owner has
-no public domain or delegated subdomain. The closest feasible evidence and
-production implementation are documented in the
-[HTTPS/DNS disposition](../https-dns-disposition.md).
+This document preserves the original HTTP, Cloud Armor, and regional-failover
+test record. The Gateway was subsequently moved to Terraform-owned global IP
+`8.232.146.143`; DuckDNS, a Google-managed certificate, and HTTPS termination
+were deployed and verified. See the [HTTPS Gateway evidence](https-gateway.md)
+and [HTTPS/DNS disposition](../https-dns-disposition.md).

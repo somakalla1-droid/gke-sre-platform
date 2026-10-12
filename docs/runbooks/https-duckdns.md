@@ -124,14 +124,19 @@ that TLS termination did not bypass the existing backend security policy.
 
 ## Rollback
 
-If the new Gateway does not program successfully, restore the pre-change
-Gateway and HTTPRoute from the merge parent, apply them to the config cluster,
-and point DuckDNS back to `136.81.84.189`. Do not destroy the Terraform-managed
-address or certificate during incident recovery; retain them for diagnosis and
-a corrected retry.
+If the HTTPS listener fails while the Gateway remains otherwise healthy, keep
+DuckDNS pointed to the Terraform-owned static address `8.232.146.143` and use
+the retained HTTP listener as the temporary recovery path. Revert only the
+listener or certificate change through a reviewed manifest update. Do not
+point DNS back to the earlier controller-owned address: its lifecycle is not
+owned by Terraform and it is not a durable rollback target.
+
+Do not destroy the Terraform-managed address or certificate during incident
+recovery; retain them for diagnosis and a corrected retry. Resource deletion
+belongs to the dependency-ordered assessment cleanup procedure after evidence
+handoff.
 
 If HTTP on the new static IP succeeds but the certificate remains
 `PROVISIONING`, keep the Gateway and DNS in place and inspect `domainStatus`.
 Certificate provisioning depends on public DNS resolving the hostname to the
 load balancer using that certificate.
-

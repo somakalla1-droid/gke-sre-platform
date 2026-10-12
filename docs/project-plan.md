@@ -44,8 +44,8 @@ The original target has been implemented and reconciled with the verified
 environment. The current traffic, application, supply-chain, security, and
 observability views are maintained in
 [As-Built Architecture and Design Rationale](architecture.md). That document
-also distinguishes the deployed public HTTP assessment endpoint from the
-recommended production HTTPS/DNS design.
+also distinguishes the deployed trusted HTTPS assessment endpoint from the
+recommended organization-owned Cloud DNS design.
 
 ### Proposed locations
 

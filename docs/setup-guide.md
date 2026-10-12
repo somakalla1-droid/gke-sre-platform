@@ -273,6 +273,13 @@ Provisioning is asynchronous. Continue only after the Gateway is programmed,
 the route is accepted, the backend policy is attached, and backend health is
 green. See the [Multi-Cluster Gateway runbook](runbooks/multi-cluster-gateway.md).
 
+Complete the public DNS and trusted TLS cutover by following the
+[HTTPS and DuckDNS cutover runbook](runbooks/https-duckdns.md). Acceptance
+requires the DuckDNS record and Gateway to use the Terraform-owned global IP,
+the Google-managed certificate and domain status to report `ACTIVE`, a normal
+HTTPS request to return HTTP 200, and the safe Cloud Armor SQLi regression to
+return HTTP 403.
+
 ## 10. Configure and verify observability
 
 Use the least-privilege `grafana-observability` identity to configure the
@@ -294,7 +301,8 @@ The deployment is accepted only when:
 1. all four Terraform refresh plans report no changes;
 2. both fleet memberships are `OK`;
 3. all six nodes and all eight application Pods are Ready;
-4. the global endpoint returns HTTP 200 and both application versions;
+4. the trusted HTTPS global endpoint returns HTTP 200 and both application
+   versions;
 5. controlled failover returns a secondary-region response;
 6. Cloud Armor blocks the safe WAF test;
 7. logs, BigQuery queries, dashboard panels, trace, profiler, and Error

@@ -6,6 +6,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 
 - [Original assignment requirements](docs/assignment-requirements.md)
 - [Requirements traceability](docs/requirements-traceability.md)
+- [Cost-constrained requirements and production disposition](docs/cost-constrained-requirements.md)
 - [Desktop and cloud readiness](docs/desktop-readiness.md)
 - [Assessment project plan](docs/project-plan.md)
 - [As-built architecture and design rationale](docs/architecture.md)
@@ -29,6 +30,7 @@ This workspace contains the platform engineering portion of the GKE SRE assessme
 - [GitHub Actions keyless image publishing](docs/github-actions-cicd.md)
 - [GitHub Actions image-publishing evidence](docs/evidence/github-actions-image-publishing.md)
 - [HTTPS, external DNS, and Cloud NAT disposition](docs/https-dns-disposition.md)
+- [Trusted HTTPS Gateway evidence](docs/evidence/https-gateway.md)
 - [Application tracing, profiling, and Error Reporting](docs/application-observability.md)
 - [Response-service observability evidence](docs/evidence/response-service-observability.md)
 - [Distributed tracing evidence](docs/evidence/distributed-tracing.md)

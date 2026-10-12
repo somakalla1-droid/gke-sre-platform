@@ -7,8 +7,9 @@
 ## System context
 
 The assessment runs two independent stateless Go applications in two zonal GKE
-Standard clusters. A global external multi-cluster Gateway distributes public
-HTTP traffic to healthy request-info Pods in either region. Request-info calls
+Standard clusters. A global external multi-cluster Gateway terminates trusted
+HTTPS and distributes public traffic to healthy request-info Pods in either
+region. Request-info calls
 the response service over cluster-local Kubernetes DNS, so both hops remain in
 the same cluster during normal traffic and regional failover.
 
@@ -18,7 +19,7 @@ flowchart TB
   legacy["Primary-only Ingress<br/>rollback endpoint<br/>136.81.197.123"]
 
   subgraph edge[Google Cloud global edge]
-    gateway["Global external multi-cluster Gateway<br/>HTTP 80 - 136.81.84.189"]
+    gateway["Global external multi-cluster Gateway<br/>HTTPS 443 / HTTP 80<br/>gke-sre-assessment.duckdns.org<br/>8.232.146.143"]
     armor["Cloud Armor WAF<br/>SQLi and XSS rules"]
     route[HTTPRoute /]
     imported["Multi-Cluster ServiceImport<br/>request-info"]
@@ -165,7 +166,7 @@ fleet configuration.
 | Primary subnet | `10.10.0.0/20`; Pods `10.20.0.0/16`; Services `10.30.0.0/20`. |
 | Secondary subnet | `10.40.0.0/20`; Pods `10.50.0.0/16`; Services `10.60.0.0/20`. |
 | Clusters | Zonal GKE Standard clusters with three `e2-medium` nodes each. |
-| Public entry | Global external multi-cluster Gateway on HTTP port 80. |
+| Public entry | Global external multi-cluster Gateway on HTTPS port 443 with a Google-managed certificate; HTTP port 80 is retained temporarily for rollback. |
 | Regional routing | Fleet membership, ServiceExport/ServiceImport, health-checked Pod backends, and automatic failover. |
 | Application A | Request-info is exported through MCS; two baseline replicas, HPA, probes, PDB, and resource controls. |
 | Application B | Response remains private behind a ClusterIP Service; two baseline replicas, HPA, probes, PDB, and resource controls. |
@@ -232,7 +233,7 @@ without combining publisher, signer, and deployer identities.
 
 | Assessment implementation | Production recommendation |
 | --- | --- |
-| Public HTTP IP with no owned domain | Stable global address, authoritative DNS, Certificate Manager authorization, HTTPS listener, and HTTP redirect/removal. |
+| Free DuckDNS hostname with trusted HTTPS and retained HTTP listener | Organization-owned domain, Cloud DNS authority, managed certificate lifecycle, and HTTP-to-HTTPS redirect or HTTP listener removal. |
 | Zonal Standard clusters | Regional clusters with multi-zone node pools, autoscaling, maintenance policy, and capacity planning. |
 | Nodes have external IP addresses | Private nodes, Private Google Access, Cloud NAT, egress firewall policy, and NAT logging. |
 | Three fixed nodes per cluster | Cluster autoscaler or Node Auto Provisioning aligned with HPA maxima and disruption budgets. |
@@ -242,12 +243,13 @@ without combining publisher, signer, and deployer identities.
 | No service mesh | Add only when mTLS identity, traffic shaping, or mesh policy justifies the operational cost. |
 
 These are documented deltas, not claims about controls deployed in the
-assessment. HTTPS/DNS and Cloud NAT have detailed implementation criteria in
+assessment. Organization-owned Cloud DNS and Cloud NAT have detailed implementation criteria in
 [HTTPS, External DNS, and Cloud NAT Disposition](https-dns-disposition.md).
 
 ## Evidence map
 
 - [Multi-cluster Gateway, Cloud Armor, and failover](evidence/multi-cluster-gateway.md)
+- [Trusted HTTPS Gateway](evidence/https-gateway.md)
 - [HPA scaling](evidence/hpa-scaling.md)
 - [Distributed tracing](evidence/distributed-tracing.md)
 - [BigQuery log export](evidence/bigquery-log-export.md)
